@@ -14,9 +14,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_if_checkmark_24_103184" />
+                            <entry key="height" value="90" />
+                            <entry key="outputName" value="ic_if_share4_216719" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="D:\downloads\from git\svgicons\tools\if_checkmark-24_103184.svg" />
+                            <entry key="sourceFile" value="D:\downloads\from git\svgicons\if_share4_216719.svg" />
+                            <entry key="width" value="80" />
                           </map>
                         </option>
                       </PersistentState>

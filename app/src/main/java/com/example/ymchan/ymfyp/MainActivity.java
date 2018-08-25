@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openFragment(int containerViewId, Fragment fragment, String tag, int title) {
-        getSupportFragmentManager().popBackStackImmediate(containerViewId + "1", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(containerViewId, fragment, tag);
         transaction.commit();
@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     public void pushFragment(int containerViewId, Fragment fragment, String tag, int title) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(containerViewId, fragment, tag);
-        transaction.replace(containerViewId, fragment, tag);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -70,6 +69,16 @@ public class MainActivity extends AppCompatActivity {
     /*
      * static methods for child fragments
      */
+    public static void openFragment(FragmentActivity activity, int containerViewId, Fragment fragment, String tag, int title) {
+        try {
+            if (activity != null && activity instanceof MainActivity) {
+                ((MainActivity) activity).openFragment(containerViewId, fragment, tag, title);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void pushFragment(FragmentActivity activity, int containerViewId, Fragment fragment, String tag, int title) {
         try {
             if (activity != null && activity instanceof MainActivity) {

@@ -12,6 +12,7 @@
         android:background="@color/colorPrimaryReallyDark">
 
         <FrameLayout
+            android:id="@+id/cam_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="130dp">
@@ -21,12 +22,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:ckCropOutput="false"
+                app:ckDoubleTapToToggleFacing="true"
                 app:ckFacing="back"
                 app:ckFlash="off"
                 app:ckFocus="tapWithMarker"
                 app:ckJpegQuality="100"
                 app:ckMethod="standard"
-                app:ckDoubleTapToToggleFacing="true"
                 app:ckPinchToZoom="true"
                 app:ckVideoQuality="highest" />
 

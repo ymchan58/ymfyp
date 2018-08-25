@@ -4,6 +4,7 @@ package com.example.ymchan.ymfyp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -22,12 +24,15 @@ import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -35,6 +40,7 @@ import android.widget.VideoView;
 import com.example.ymchan.ymfyp.Image.ResultHolder;
 import com.example.ymchan.ymfyp.Util.Util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -55,12 +61,14 @@ public class PreviewFragment extends Fragment {
     ImageView btnSaveImage;
     ImageView btnEditImage;
     ImageView btnExit;
+    ImageView btnShare;
 
     byte[] jpeg = null;
     Bitmap capturedImageBitmap = null;
 
     private boolean isImageSaved = false;
 
+    private ShareActionProvider mShareActionProvider;
 
     public PreviewFragment() {
         // Required empty public constructor
@@ -80,6 +88,7 @@ public class PreviewFragment extends Fragment {
         btnSaveImage.setImageResource(R.drawable.ic_if_icons_save_1564526);
         btnEditImage = view.findViewById(R.id.edit_image_btn);
         btnExit = view.findViewById(R.id.exit_btn);
+        btnShare = view.findViewById(R.id.share_image_btn);
 
         // Inflate the layout for this fragment
         return view;
@@ -118,6 +127,10 @@ public class PreviewFragment extends Fragment {
             captureLatency.setText(ResultHolder.getTimeToCallback() + " milliseconds");
         }
 
+        // YM Note 14/8/2018:
+        // video implementation.
+        // for now on hold.
+
         else if (video != null) {
             videoView.setVisibility(View.VISIBLE);
             videoView.setVideoURI(Uri.parse(video.getAbsolutePath()));
@@ -147,6 +160,7 @@ public class PreviewFragment extends Fragment {
         btnSaveImage.setOnClickListener(mOnclickListener);
         btnEditImage.setOnClickListener(mOnclickListener);
         btnExit.setOnClickListener(mOnclickListener);
+        btnShare.setOnClickListener(mOnclickListener);
     }
 
     public View.OnClickListener mOnclickListener = new View.OnClickListener() {
@@ -175,6 +189,22 @@ public class PreviewFragment extends Fragment {
                     } else {
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
                     }
+                    break;
+
+                case R.id.share_image_btn:
+                    Log.d(TAG, "share_btn pressed ");
+                    //here write code to share image //get clicked image bitmap and then share
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.setType("image/png");
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    String path = MediaStore.Images.Media.insertImage(getView().getContext().getContentResolver(), capturedImageBitmap , "Title", null);
+                    Uri uri = Uri.parse(path);
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out my photo from #ymfyp! Free photo editing app | Available on Android ");
+                    shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Attached image");
+                    startActivity(Intent.createChooser(shareIntent, "Send your image"));
+
                     break;
 
                 default:
@@ -222,7 +252,11 @@ public class PreviewFragment extends Fragment {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
-                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+//                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                        MainActivity.openFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+                                new HomeFragment(),
+                                HomeFragment.class.getName(),
+                                0);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
