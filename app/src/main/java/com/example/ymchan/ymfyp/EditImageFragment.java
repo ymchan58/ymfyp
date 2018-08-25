@@ -194,7 +194,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
                     break;
 
                 case R.id.imgSave:
-//                    saveImage();
+                    saveImage();
 //                    editedImageBitmap =  mPhotoEditorView.getSource().;
                     MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
                             new PreviewFragment(),
@@ -267,28 +267,27 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
 
     }
 
-//    @SuppressLint("MissingPermission")
-//    private void saveImage() {
-//        Log.d(TAG, "save image to phone");
-//        if (true) {
-////            showLoading("Saving...");
-//            File file = new File(Environment.getExternalStorageDirectory()
-//                    + File.separator + ""
-//                    + System.currentTimeMillis() + ".png");
+    @SuppressLint("MissingPermission")
+    private void saveImage() {
+
+
+        if (true) {
+//            showLoading("Saving...");
+            File file = new File(Environment.getExternalStorageDirectory()
+                    + File.separator + "" + "ymfyp1" +
+                    + System.currentTimeMillis() + ".png");
 //            try {
-////                file.createNewFile();
-//                mPhotoEditor.saveAsBitmap(new PhotoEditor.OnSaveBitmap() {
+//                file.createNewFile();
+//                mPhotoEditor.saveAsFile(file.getAbsolutePath(), new PhotoEditor.OnSaveListener() {
 //                    @Override
-//                    public void onBitmapReady(@NonNull Bitmap saveBitmap) {
+//                    public void onSuccess(@NonNull String imagePath) {
 ////                        hideLoading();
 ////                        showSnackbar("Image Saved Successfully");
-//                        Log.d(TAG, "Image Saved Successfully");
-////                        mPhotoEditorView.getSource().setImageURI(Uri.fromFile(new File(imagePath)));
+//                        mPhotoEditorView.getSource().setImageURI(Uri.fromFile(new File(imagePath)));
 //                    }
 //
 //                    @Override
 //                    public void onFailure(@NonNull Exception exception) {
-//                        Log.d(TAG, "Failed to save image");
 ////                        hideLoading();
 ////                        showSnackbar("Failed to save Image");
 //                    }
@@ -298,8 +297,29 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
 ////                hideLoading();
 ////                showSnackbar(e.getMessage());
 //            }
-//        }
-//    }
+            try {
+                file.createNewFile();
+                mPhotoEditor.saveAsFile(file.getAbsolutePath(), new PhotoEditor.OnSaveListener() {
+                    @Override
+                    public void onSuccess(@NonNull String imagePath) {
+                        Log.e(TAG,"Image Saved Successfully");
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e(TAG,"Failed to save Image");
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+////                hideLoading();
+////                showSnackbar(e.getMessage());
+            }
+
+        }
+
+
+    }
 
     //Override methods for OnPhotoEditorListener
     @Override
