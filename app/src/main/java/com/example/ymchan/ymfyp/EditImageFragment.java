@@ -3,6 +3,7 @@ package com.example.ymchan.ymfyp;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -44,6 +45,7 @@ import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
+import ja.burhanrashid52.photoeditor.SaveSettings;
 import ja.burhanrashid52.photoeditor.ViewType;
 
 /**
@@ -67,10 +69,13 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     public static final String EXTRA_IMAGE_PATHS = "extra_image_paths";
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
+    public static final int READ_WRITE_STORAGE = 52;
 
     private PropertiesBSFragment mPropertiesBSFragment;
 //    private EmojiBSFragment mEmojiBSFragment;
 //    private StickerBSFragment mStickerBSFragment;
+
+    private ProgressDialog mProgressDialog;
 
     private TextView mTxtCurrentTool;
     private Typeface mWonderFont;
@@ -131,17 +136,17 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         //loading font from assest
         Typeface mEmojiTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "emojione-android.ttf");
 
-        mPhotoEditor = new PhotoEditor.Builder(getActivity(), mPhotoEditorView)
-                .setPinchTextScalable(true)
-                .setDefaultTextTypeface(mTextRobotoTf)
-                .setDefaultEmojiTypeface(mEmojiTypeFace)
-                .build();
-
-        mPhotoEditor.setOnPhotoEditorListener(this);
-
         LinearLayoutManager llmTools = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRvTools.setLayoutManager(llmTools);
         mRvTools.setAdapter(mEditingToolsAdapter);
+
+        mPhotoEditor = new PhotoEditor.Builder(getActivity(), mPhotoEditorView)
+                .setPinchTextScalable(true)
+//                .setDefaultTextTypeface(mTextRobotoTf)
+//                .setDefaultEmojiTypeface(mEmojiTypeFace)
+                .build();
+
+        mPhotoEditor.setOnPhotoEditorListener(this);
 
     }
 
@@ -196,27 +201,16 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
                 case R.id.imgSave:
                     saveImage();
 //                    editedImageBitmap =  mPhotoEditorView.getSource().;
-                    MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
-                            new PreviewFragment(),
-                            PreviewFragment.class.getName(),
-                            0);
+//                    MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+//                            new PreviewFragment(),
+//                            PreviewFragment.class.getName(),
+//                            0);
                     break;
 
                 case R.id.imgClose:
                     onPressImageClose();
                     break;
 
-//                case R.id.imgCamera:
-//                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-//                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
-//                    break;
-//
-//                case R.id.imgGallery:
-//                    Intent intent = new Intent();
-//                    intent.setType("image/*");
-//                    intent.setAction(Intent.ACTION_GET_CONTENT);
-//                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_REQUEST);
-//                    break;
             }
         }
     };
@@ -267,58 +261,74 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
 
     }
 
+    public boolean requestPermission(String permission) {
+        boolean isGranted = ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), permission) == PackageManager.PERMISSION_GRANTED;
+        if (!isGranted) {
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[]{permission},
+                    READ_WRITE_STORAGE);
+        }
+        return isGranted;
+    }
+
     @SuppressLint("MissingPermission")
     private void saveImage() {
-
-
-        if (true) {
-//            showLoading("Saving...");
+        if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Log.d(TAG, "Saving image");
+            showLoading("Saving...");
             File file = new File(Environment.getExternalStorageDirectory()
-                    + File.separator + "" + "ymfyp1" +
+                    + File.separator + ""
                     + System.currentTimeMillis() + ".png");
-//            try {
-//                file.createNewFile();
-//                mPhotoEditor.saveAsFile(file.getAbsolutePath(), new PhotoEditor.OnSaveListener() {
-//                    @Override
-//                    public void onSuccess(@NonNull String imagePath) {
-////                        hideLoading();
-////                        showSnackbar("Image Saved Successfully");
-//                        mPhotoEditorView.getSource().setImageURI(Uri.fromFile(new File(imagePath)));
-//                    }
-//
-//                    @Override
-//                    public void onFailure(@NonNull Exception exception) {
-////                        hideLoading();
-////                        showSnackbar("Failed to save Image");
-//                    }
-//                });
-//            } catch (IOException e) {
-//                e.printStackTrace();
-////                hideLoading();
-////                showSnackbar(e.getMessage());
-//            }
             try {
                 file.createNewFile();
-                mPhotoEditor.saveAsFile(file.getAbsolutePath(), new PhotoEditor.OnSaveListener() {
+
+                SaveSettings saveSettings = new SaveSettings.Builder()
+                        .setClearViewsEnabled(true)
+                        .setTransparencyEnabled(true)
+                        .build();
+
+                mPhotoEditor.saveAsFile(file.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
                     @Override
                     public void onSuccess(@NonNull String imagePath) {
-                        Log.e(TAG,"Image Saved Successfully");
+                        Log.d(TAG, "Image Saved Successfully");
+                        hideLoading();
+                        MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+                            new PreviewFragment(),
+                            PreviewFragment.class.getName(),
+                            0);
+//                        showSnackbar("Image Saved Successfully");
+                        mPhotoEditorView.getSource().setImageURI(Uri.fromFile(new File(imagePath)));
                     }
 
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Log.e(TAG,"Failed to save Image");
+                        Log.d(TAG, "Failed to save image");
+                        hideLoading();
+//                        showSnackbar("Failed to save Image");
                     }
                 });
             } catch (IOException e) {
                 e.printStackTrace();
-////                hideLoading();
-////                showSnackbar(e.getMessage());
+//                hideLoading();
+//                showSnackbar(e.getMessage());
             }
-
         }
 
+    }
 
+    protected void showLoading(@NonNull String message) {
+        mProgressDialog = new ProgressDialog(getView().getContext());
+        mProgressDialog.setMessage(message);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+    }
+
+    protected void hideLoading() {
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
     }
 
     //Override methods for OnPhotoEditorListener
