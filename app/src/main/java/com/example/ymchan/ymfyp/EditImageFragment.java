@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,6 +38,7 @@ import com.example.ymchan.ymfyp.Util.EditingToolsAdapter;
 import com.example.ymchan.ymfyp.Util.ToolType;
 import com.example.ymchan.ymfyp.Util.Util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -293,6 +295,16 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
                     public void onSuccess(@NonNull String imagePath) {
                         Log.d(TAG, "Image Saved Successfully");
                         hideLoading();
+
+                        Bitmap image = BitmapFactory.decodeFile(imagePath);
+
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byte[] editedJpeg = stream.toByteArray();
+
+                        ResultHolder.dispose();
+                        ResultHolder.setImage(editedJpeg);
+
                         MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
                             new PreviewFragment(),
                             PreviewFragment.class.getName(),
