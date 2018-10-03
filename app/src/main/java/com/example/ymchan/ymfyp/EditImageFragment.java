@@ -57,6 +57,7 @@ import ja.burhanrashid52.photoeditor.ViewType;
 public class EditImageFragment extends Fragment implements OnPhotoEditorListener,
         EditingToolsAdapter.OnItemSelected,
         PropertiesBSFragment.Properties,
+        EmojiBSFragment.EmojiListener,
         OnSaveBitmap {
 
     private final static String TAG = "ymfyp.EditImageFragment";
@@ -74,7 +75,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     public static final int READ_WRITE_STORAGE = 52;
 
     private PropertiesBSFragment mPropertiesBSFragment;
-//    private EmojiBSFragment mEmojiBSFragment;
+    private EmojiBSFragment mEmojiBSFragment;
 //    private StickerBSFragment mStickerBSFragment;
 
     private ProgressDialog mProgressDialog;
@@ -110,6 +111,12 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
 
         mPropertiesBSFragment = new PropertiesBSFragment();
         mPropertiesBSFragment.setPropertiesChangeListener(this);
+
+        mEmojiBSFragment = new EmojiBSFragment();
+        mEmojiBSFragment.setEmojiListener(this);
+
+//        mStickerBSFragment = new StickerBSFragment();
+//        mStickerBSFragment.setStickerListener(this);
 
         // Inflate the layout for this fragment
         return view;
@@ -409,9 +416,9 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
 //                mTxtCurrentTool.setText(R.string.label_filter);
 //                showFilter(true);
 //                break;
-//            case EMOJI:
-//                mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
-//                break;
+            case EMOJI:
+                mEmojiBSFragment.show(getFragmentManager(), mEmojiBSFragment.getTag());
+                break;
 //            case STICKER:
 //                mStickerBSFragment.show(getSupportFragmentManager(), mStickerBSFragment.getTag());
 //                break;
@@ -435,6 +442,13 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     public void onBrushSizeChanged(int brushSize) {
         mPhotoEditor.setBrushSize(brushSize);
         mTxtCurrentTool.setText(R.string.label_brush);
+    }
+
+    //Override methods for EmojiBSFragment.EmojiListener,
+    @Override
+    public void onEmojiClick(String emojiUnicode) {
+        mPhotoEditor.addEmoji(emojiUnicode);
+        mTxtCurrentTool.setText(R.string.label_emoji);
     }
 
     //Override methods for OnSaveBitmap
