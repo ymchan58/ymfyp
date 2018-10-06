@@ -18,6 +18,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.transition.ChangeBounds;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -29,12 +31,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ymchan.ymfyp.Image.ResultHolder;
 import com.example.ymchan.ymfyp.Util.EditingToolsAdapter;
+import com.example.ymchan.ymfyp.Util.FilterListener;
+import com.example.ymchan.ymfyp.Util.FilterViewAdapter;
 import com.example.ymchan.ymfyp.Util.ToolType;
 import com.example.ymchan.ymfyp.Util.Util;
 
@@ -47,6 +52,7 @@ import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
+import ja.burhanrashid52.photoeditor.PhotoFilter;
 import ja.burhanrashid52.photoeditor.SaveSettings;
 import ja.burhanrashid52.photoeditor.ViewType;
 
@@ -58,6 +64,8 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         EditingToolsAdapter.OnItemSelected,
         PropertiesBSFragment.Properties,
         EmojiBSFragment.EmojiListener,
+        StickerBSFragment.StickerListener,
+        FilterListener,
         OnSaveBitmap {
 
     private final static String TAG = "ymfyp.EditImageFragment";
@@ -76,7 +84,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
 
     private PropertiesBSFragment mPropertiesBSFragment;
     private EmojiBSFragment mEmojiBSFragment;
-//    private StickerBSFragment mStickerBSFragment;
+    private StickerBSFragment mStickerBSFragment;
 
     private ProgressDialog mProgressDialog;
 
@@ -84,7 +92,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     private Typeface mWonderFont;
     private RecyclerView mRvTools, mRvFilters;
     private EditingToolsAdapter mEditingToolsAdapter = new EditingToolsAdapter(this);
-//    private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
+    private FilterViewAdapter mFilterViewAdapter = new FilterViewAdapter(this);
     private ConstraintLayout mRootView;
     private ConstraintSet mConstraintSet = new ConstraintSet();
     private boolean mIsFilterVisible;
@@ -115,8 +123,16 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         mEmojiBSFragment = new EmojiBSFragment();
         mEmojiBSFragment.setEmojiListener(this);
 
-//        mStickerBSFragment = new StickerBSFragment();
-//        mStickerBSFragment.setStickerListener(this);
+        mStickerBSFragment = new StickerBSFragment();
+        mStickerBSFragment.setStickerListener(this);
+
+        mPhotoEditor = new PhotoEditor.Builder(getActivity(), mPhotoEditorView)
+                .setPinchTextScalable(true) // set flag to make text scalable when pinch
+                //.setDefaultTextTypeface(mTextRobotoTf)
+                //.setDefaultEmojiTypeface(mEmojiTypeFace)
+                .build(); // build photo editor sdk
+
+        mPhotoEditor.setOnPhotoEditorListener(this);
 
         // Inflate the layout for this fragment
         return view;
@@ -148,6 +164,10 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         LinearLayoutManager llmTools = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRvTools.setLayoutManager(llmTools);
         mRvTools.setAdapter(mEditingToolsAdapter);
+
+        LinearLayoutManager llmFilters = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mRvFilters.setLayoutManager(llmFilters);
+        mRvFilters.setAdapter(mFilterViewAdapter);
 
         mPhotoEditor = new PhotoEditor.Builder(getActivity(), mPhotoEditorView)
                 .setPinchTextScalable(true)
@@ -225,15 +245,16 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     };
 
     public void onPressImageClose() {
-//        if (mIsFilterVisible) {
-//            showFilter(false);
-//            mTxtCurrentTool.setText(R.string.app_name);
+        if (mIsFilterVisible) {
+            showFilter(false);
+            mTxtCurrentTool.setText(R.string.app_name);
+        }
 //        } else if (!mPhotoEditor.isCacheEmpty()) {
 //            showSaveDialog();
 //        } else {
 //            getActivity().getSupportFragmentManager().popBackStackImmediate();
 //        }
-        if (!mPhotoEditor.isCacheEmpty()) {
+        else if (!mPhotoEditor.isCacheEmpty()) {
             showSaveDialog();
         } else {
             getActivity().getSupportFragmentManager().popBackStackImmediate();
@@ -353,15 +374,15 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     //Override methods for OnPhotoEditorListener
     @Override
     public void onEditTextChangeListener(final View rootView, String text, int colorCode) {
-//        TextEditorDialogFragment textEditorDialogFragment =
-//                TextEditorDialogFragment.show(this, text, colorCode);
-//        textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
-//            @Override
-//            public void onDone(String inputText, int colorCode) {
-//                mPhotoEditor.editText(rootView, inputText, colorCode);
-//                mTxtCurrentTool.setText(R.string.label_text);
-//            }
-//        });
+        TextEditorDialogFragment textEditorDialogFragment =
+                TextEditorDialogFragment.show(getActivity(), text, colorCode);
+        textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
+            @Override
+            public void onDone(String inputText, int colorCode) {
+                mPhotoEditor.editText(rootView, inputText, colorCode);
+                mTxtCurrentTool.setText(R.string.label_text);
+            }
+        });
     }
 
     @Override
@@ -398,31 +419,55 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
                 mTxtCurrentTool.setText(R.string.label_brush);
                 mPropertiesBSFragment.show(getFragmentManager(), mPropertiesBSFragment.getTag());
                 break;
-//            case TEXT:
-//                TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(this);
-//                textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
-//                    @Override
-//                    public void onDone(String inputText, int colorCode) {
-//                        mPhotoEditor.addText(inputText, colorCode);
-//                        mTxtCurrentTool.setText(R.string.label_text);
-//                    }
-//                });
-//                break;
-//            case ERASER:
-//                mPhotoEditor.brushEraser();
-//                mTxtCurrentTool.setText(R.string.label_eraser);
-//                break;
-//            case FILTER:
-//                mTxtCurrentTool.setText(R.string.label_filter);
-//                showFilter(true);
-//                break;
+            case TEXT:
+                TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(getActivity());
+                textEditorDialogFragment.setOnTextEditorListener(new TextEditorDialogFragment.TextEditor() {
+                    @Override
+                    public void onDone(String inputText, int colorCode) {
+                        mPhotoEditor.addText(inputText, colorCode);
+                        mTxtCurrentTool.setText(R.string.label_text);
+                    }
+                });
+                break;
+            case ERASER:
+                mPhotoEditor.brushEraser();
+                mTxtCurrentTool.setText(R.string.label_eraser);
+                break;
+            case FILTER:
+                mTxtCurrentTool.setText(R.string.label_filter);
+                showFilter(true);
+                break;
             case EMOJI:
                 mEmojiBSFragment.show(getFragmentManager(), mEmojiBSFragment.getTag());
                 break;
-//            case STICKER:
-//                mStickerBSFragment.show(getSupportFragmentManager(), mStickerBSFragment.getTag());
-//                break;
+            case STICKER:
+                mStickerBSFragment.show(getFragmentManager(), mStickerBSFragment.getTag());
+                break;
         }
+    }
+
+    void showFilter(boolean isVisible) {
+        mIsFilterVisible = isVisible;
+        mConstraintSet.clone(mRootView);
+
+        if (isVisible) {
+            mConstraintSet.clear(mRvFilters.getId(), ConstraintSet.START);
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.START,
+                    ConstraintSet.PARENT_ID, ConstraintSet.START);
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.END,
+                    ConstraintSet.PARENT_ID, ConstraintSet.END);
+        } else {
+            mConstraintSet.connect(mRvFilters.getId(), ConstraintSet.START,
+                    ConstraintSet.PARENT_ID, ConstraintSet.END);
+            mConstraintSet.clear(mRvFilters.getId(), ConstraintSet.END);
+        }
+
+        ChangeBounds changeBounds = new ChangeBounds();
+        changeBounds.setDuration(350);
+        changeBounds.setInterpolator(new AnticipateOvershootInterpolator(1.0f));
+        TransitionManager.beginDelayedTransition(mRootView, changeBounds);
+
+        mConstraintSet.applyTo(mRootView);
     }
 
     //Override methods for PropertiesBSFragment.Properties
@@ -450,6 +495,20 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         mPhotoEditor.addEmoji(emojiUnicode);
         mTxtCurrentTool.setText(R.string.label_emoji);
     }
+
+    //Override methods for StickerBSFragment.StickerListener
+    @Override
+    public void onStickerClick(Bitmap bitmap) {
+        mPhotoEditor.addImage(bitmap);
+        mTxtCurrentTool.setText(R.string.label_sticker);
+    }
+
+    //Override methods for FilterListener
+    @Override
+    public void onFilterSelected(PhotoFilter photoFilter) {
+        mPhotoEditor.setFilterEffect(photoFilter);
+    }
+
 
     //Override methods for OnSaveBitmap
 
