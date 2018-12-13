@@ -129,6 +129,10 @@ public class HomeFragment extends Fragment {
 
                 case R.id.arcamera_icn:
                     Log.d(TAG, "arcamera_icn pressed ");
+                    MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+                            new FaceEffectFragment(),
+                            FaceEffectFragment.class.getName(),
+                            0);
                     break;
 
                 default:

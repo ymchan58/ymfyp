@@ -3,4 +3,9 @@
     <dimen name="editor_size">35dp</dimen>
     <dimen name="normal_margin">8dp</dimen>
     <dimen name="large_margin">16dp</dimen>
+
+    <!-- FaceGraphic dimensions -->
+    <dimen name="eyeOutlineStroke">5dp</dimen>
+    <dimen name="textSize">10dp</dimen>
+    <dimen name="hintStroke">3dp</dimen>
 </resources>

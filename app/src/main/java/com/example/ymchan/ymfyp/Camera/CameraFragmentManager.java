@@ -5,6 +5,7 @@ import android.util.Log;
 
 /**
  * Created by yan min on 10/6/2018
+ * For Default simple camera
  */
 public class CameraFragmentManager {
 

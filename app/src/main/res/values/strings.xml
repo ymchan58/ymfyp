@@ -8,10 +8,11 @@
     <string name="storage_access_denied">The app was not allowed to write in your storage.</string>
 
     <!-- AboutFragment -->
-    <string name="app_display_name">some photo editing app</string>
+    <string name="app_display_name">photoES</string>
+    <string name="app_desc">photo edit share</string>
     <string name="home_btn_camera">Camera</string>
     <string name="home_btn_folder">Gallery</string>
-    <string name="home_btn_arcam">AR Cam</string>
+    <string name="home_btn_arcam">Face effect Cam</string>
 
     <!-- CameraFragment -->
 
@@ -23,6 +24,13 @@
     <string name="toast_img_saved">Image saved.</string>
     <string name="pop_delete_title">Are you sure you want to delete this entry?</string>
     <string name="pop_delete">Press \'CANCEL\' to save image before exiting.</string>
+
+    <!-- FaceEffect -->
+    <string name="ok">OK</string>
+    <string name="disappointed_ok">Well, okay then.</string>
+    <string name="permission_camera_rationale">This app needs access to the camera in order to detect people’s faces.</string>
+    <string name="no_camera_permission">This app can’t run because it doesn’t have permission to use the camera. It will now exit.</string>
+    <string name="low_storage_error">This app can’t download the face detector components it needs because this device has too little available storage.</string>
 
     <!--photoeditor-->
     <string name="label_brush">Brush</string>

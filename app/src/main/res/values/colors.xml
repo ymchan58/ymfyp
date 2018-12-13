@@ -19,4 +19,11 @@
     <color name="yellow_color_picker">#FBE870</color>
     <color name="yellow_green_color_picker">#C5E17A</color>
     <color name="tool_bg">#151414</color>
+
+    <!-- FaceGraphic colors (Face effect cam)-->
+    <color name="eyeWhite">#FFFACD</color>
+    <color name="eyelid">#B0E0E6</color>
+    <color name="iris">#8B4513</color>
+    <color name="eyeOutline">#000000</color>
+    <color name="overlayHint">#7FFF00</color>
 </resources>
