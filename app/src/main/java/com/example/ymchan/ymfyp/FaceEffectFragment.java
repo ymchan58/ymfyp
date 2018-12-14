@@ -3,11 +3,17 @@ package com.example.ymchan.ymfyp;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,11 +29,14 @@ import android.widget.ImageButton;
 
 import com.example.ymchan.ymfyp.Camera.CameraSourcePreview;
 import com.example.ymchan.ymfyp.Camera.GraphicOverlay;
+import com.example.ymchan.ymfyp.Image.ResultHolder;
 import com.example.ymchan.ymfyp.Util.FaceTracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 import com.google.android.gms.vision.Detector;
@@ -35,6 +44,8 @@ import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
+
+import java.lang.*;
 
 /**
  * Created by yan min on 12/12/2018
@@ -52,6 +63,8 @@ public class FaceEffectFragment extends Fragment {
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
     private boolean mIsFrontFacing = true;
+
+    private ProgressDialog mProgressDialog;
 
 
     // Activity event handlers
@@ -75,7 +88,7 @@ public class FaceEffectFragment extends Fragment {
         button.setOnClickListener(mSwitchCameraButtonListener);
 
         final ImageButton captureButton = (ImageButton) view.findViewById(R.id.capButton);
-        button.setOnClickListener(mCaptureCameraButtonListener);
+        captureButton.setOnClickListener(mCaptureCameraButtonListener);
 
         // Inflate the layout for this fragment
         return view;
@@ -117,17 +130,99 @@ public class FaceEffectFragment extends Fragment {
 
     private View.OnClickListener mCaptureCameraButtonListener = new View.OnClickListener() {
         public void onClick(View v) {
-            mIsFrontFacing = !mIsFrontFacing;
-
-            if (mCameraSource != null) {
-                mCameraSource.release();
-                mCameraSource = null;
-            }
-
-            createCameraSource();
-            startCameraSource();
+            Log.d(TAG, "capturebutton clicked.");
+            mCameraSource.takePicture(null, mPicture);
+            showLoading("Capturing...");
         }
     };
+
+    CameraSource.PictureCallback mPicture = new CameraSource.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data) {
+            Log.d(TAG, "CameraSource.PictureCallback");
+            Bitmap face = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+            //Rotate because camerasource reorients captured image for some reason?
+            if(mIsFrontFacing){ //front face camera
+                face = rotate(face, 270, mIsFrontFacing);
+            } else { //back face camera
+                face = rotate(face, 90, mIsFrontFacing);
+            }
+
+
+            // Generate the Eyes Overlay Bitmap
+            mPreview.setDrawingCacheEnabled(true);
+            Bitmap overlay = mPreview.getDrawingCache();
+
+            // Generate the final merged image
+            Bitmap result = mergeBitmaps(face, overlay);
+
+            long captureStartTime = System.currentTimeMillis();
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] jpeg = stream.toByteArray();
+            result.recycle();
+
+            long callbackTime = System.currentTimeMillis();
+            ResultHolder.dispose();
+            ResultHolder.setImage(jpeg);
+            ResultHolder.setTimeToCallback(callbackTime - captureStartTime);
+
+            hideLoading();
+
+            MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+                    new PreviewFragment(),
+                    PreviewFragment.class.getName(),
+                    0);
+        }
+    };
+
+    public static Bitmap rotate(Bitmap bitmap, int degree, boolean isFront) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+
+        Matrix mtx = new Matrix();
+        //       mtx.postRotate(degree);
+        mtx.setRotate(degree);
+        if(isFront){ //flip image for front camera.
+            mtx.preScale(1, -1);
+        }
+
+        return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
+    }
+
+    public Bitmap mergeBitmaps(Bitmap face, Bitmap overlay) {
+        // Create a new image with target size
+        Log.d(TAG, "merge bitmaps face width, height = " + face.getWidth() + " , " + face.getHeight()
+                + " overlay width, height = " + overlay.getWidth() + " , " + overlay.getHeight());
+        int width = face.getWidth();
+        int height = face.getHeight();
+        Bitmap newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        Rect faceRect = new Rect(0,0,width,height);
+        Rect overlayRect = new Rect(0,0,overlay.getWidth(), (int)(overlay.getWidth()*1.33));
+
+        // Draw face and then overlay (Make sure rects are as needed)
+        Canvas canvas = new Canvas(newBitmap);
+        canvas.drawBitmap(face, faceRect, faceRect, null);
+        canvas.drawBitmap(overlay, overlayRect, faceRect, null);
+        return newBitmap;
+    }
+
+    protected void showLoading(@NonNull String message) {
+        mProgressDialog = new ProgressDialog(getView().getContext());
+        mProgressDialog.setMessage(message);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+    }
+
+    protected void hideLoading() {
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+    }
 
     @Override
     public void onResume() {

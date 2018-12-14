@@ -2,6 +2,7 @@ package com.example.ymchan.ymfyp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -45,10 +47,31 @@ public class MainActivity extends AppCompatActivity {
             //do here
         }
 
-        openFragment(MainActivity.LAYOUT_MAIN_ID,
-                        new HomeFragment(),
-                        HomeFragment.class.getName(),
-                        0);
+        // Get the Intent that started this activity and extract the string
+        Intent intent = getIntent();
+        Log.d(TAG, intent.toString());
+        if(intent.hasExtra(ReceiveActivity.EXTRA_MESSAGE)){
+            //if receive data from other app through ReceiveActivity
+            Log.d(TAG, "HAS EXTRA!!!");
+            openFragment(MainActivity.LAYOUT_MAIN_ID,
+                    new PreviewFragment(),
+                    PreviewFragment.class.getName(),
+                    0);
+            Log.d(TAG, "open preview fragment");
+        } else {
+            //open app from home
+            Log.d(TAG, "open home fragment");
+            openFragment(MainActivity.LAYOUT_MAIN_ID,
+                    new HomeFragment(),
+                    HomeFragment.class.getName(),
+                    0);
+        }
+
+//        Log.d(TAG, "open home fragment");
+//        openFragment(MainActivity.LAYOUT_MAIN_ID,
+//                        new HomeFragment(),
+//                        HomeFragment.class.getName(),
+//                        0);
     }
 
     public void openFragment(int containerViewId, Fragment fragment, String tag, int title) {
