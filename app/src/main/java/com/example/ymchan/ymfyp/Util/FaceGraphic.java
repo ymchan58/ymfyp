@@ -52,6 +52,12 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
     private static final float DOT_RADIUS = 3.0f;
     private static final float TEXT_OFFSET_Y = -30.0f;
 
+    private static final int DEFAULT_FACE_EFFECT = 1;
+    private static final int EMOJI_EFFECT = 2;
+    private static final int LIGHTBULB_EFFECT = 3;
+
+    private int selectedFilter = DEFAULT_FACE_EFFECT;
+
     private boolean mIsFrontFacing;
 
     // This variable may be written to by one of many threads. By declaring it as volatile,
@@ -83,6 +89,17 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
         Resources resources = context.getResources();
         initializePaints(resources);
         initializeGraphics(resources);
+    }
+
+    //Added by yan min 18/12/2018:
+    //enable multiple filters.
+    FaceGraphic(GraphicOverlay overlay, Context context, boolean isFrontFacing, int filter) {
+        super(overlay);
+        mIsFrontFacing = isFrontFacing;
+        Resources resources = context.getResources();
+        initializePaints(resources);
+        initializeGraphics(resources);
+        selectedFilter = filter;
     }
 
     private void initializeGraphics(Resources resources) {
@@ -203,23 +220,32 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
         float eyeRadius = EYE_RADIUS_PROPORTION * distance;
         float irisRadius = IRIS_RADIUS_PROPORTION * distance;
 
-        // Draw the eyes.
-        PointF leftIrisPosition = mLeftPhysics.nextIrisPosition(leftEyePosition, eyeRadius, irisRadius);
-        drawEye(canvas, leftEyePosition, eyeRadius, leftIrisPosition, irisRadius, leftEyeOpen, smiling);
-        PointF rightIrisPosition = mRightPhysics.nextIrisPosition(rightEyePosition, eyeRadius, irisRadius);
-        drawEye(canvas, rightEyePosition, eyeRadius, rightIrisPosition, irisRadius, rightEyeOpen, smiling);
+        //Added by yan min 18/12/2018:
+        //enable multiple filters.
+        if (selectedFilter == DEFAULT_FACE_EFFECT){
+            //original filter from library.
+            // Draw the eyes.
+            PointF leftIrisPosition = mLeftPhysics.nextIrisPosition(leftEyePosition, eyeRadius, irisRadius);
+            drawEye(canvas, leftEyePosition, eyeRadius, leftIrisPosition, irisRadius, leftEyeOpen, smiling);
+            PointF rightIrisPosition = mRightPhysics.nextIrisPosition(rightEyePosition, eyeRadius, irisRadius);
+            drawEye(canvas, rightEyePosition, eyeRadius, rightIrisPosition, irisRadius, rightEyeOpen, smiling);
 
-        // Draw the nose.
-        drawNose(canvas, noseBasePosition, leftEyePosition, rightEyePosition, width);
+            // Draw the nose.
+            drawNose(canvas, noseBasePosition, leftEyePosition, rightEyePosition, width);
 
-        // Draw the mustache.
-        drawMustache(canvas, noseBasePosition, mouthLeftPosition, mouthRightPosition);
+            // Draw the mustache.
+            drawMustache(canvas, noseBasePosition, mouthLeftPosition, mouthRightPosition);
 
-        // Draw the hat only if the subject's head is titled at a
-        // sufficiently jaunty angle.
-        final float HEAD_TILT_HAT_THRESHOLD = 20.0f;
-        if (Math.abs(eulerZ) > HEAD_TILT_HAT_THRESHOLD) {
-            drawHat(canvas, position, width, height, noseBasePosition);
+            // Draw the hat only if the subject's head is titled at a
+            // sufficiently jaunty angle.
+            final float HEAD_TILT_HAT_THRESHOLD = 20.0f;
+            if (Math.abs(eulerZ) > HEAD_TILT_HAT_THRESHOLD) {
+                drawHat(canvas, position, width, height, noseBasePosition);
+            }
+        } else if (selectedFilter == EMOJI_EFFECT) {
+
+        } else if (selectedFilter == LIGHTBULB_EFFECT){
+
         }
     }
 

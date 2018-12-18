@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import com.example.ymchan.ymfyp.Camera.CameraSourcePreview;
 import com.example.ymchan.ymfyp.Camera.GraphicOverlay;
 import com.example.ymchan.ymfyp.Image.ResultHolder;
+import com.example.ymchan.ymfyp.Util.FaceGraphic;
 import com.example.ymchan.ymfyp.Util.FaceTracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -59,10 +60,21 @@ public class FaceEffectFragment extends Fragment {
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 255;
 
+    //Select filter effect
+    private static final int DEFAULT_FACE_EFFECT = 1;
+    private static final int EMOJI_EFFECT = 2;
+    private static final int LIGHTBULB_EFFECT = 3;
+
     private CameraSource mCameraSource = null;
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
     private boolean mIsFrontFacing = true;
+    private int mSelectedFilter = DEFAULT_FACE_EFFECT;
+    private FaceTracker mFaceTracker;
+
+    private ImageButton filter1Btn;
+    private ImageButton filter2Btn;
+    private ImageButton filter3Btn;
 
     private ProgressDialog mProgressDialog;
 
@@ -84,11 +96,22 @@ public class FaceEffectFragment extends Fragment {
         mPreview = (CameraSourcePreview) view.findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) view.findViewById(R.id.faceOverlay);
 
+        //flip button
         final ImageButton button = (ImageButton) view.findViewById(R.id.flipButton);
         button.setOnClickListener(mSwitchCameraButtonListener);
 
+        //capture button
         final ImageButton captureButton = (ImageButton) view.findViewById(R.id.capButton);
         captureButton.setOnClickListener(mCaptureCameraButtonListener);
+
+        //filter selection buttons
+        filter1Btn = (ImageButton) view.findViewById(R.id.filter1);
+        filter2Btn = (ImageButton) view.findViewById(R.id.filter2);
+        filter3Btn = (ImageButton) view.findViewById(R.id.filter3);
+
+        filter1Btn.setOnClickListener(mFilterOnclickListener);
+        filter2Btn.setOnClickListener(mFilterOnclickListener);
+        filter3Btn.setOnClickListener(mFilterOnclickListener);
 
         // Inflate the layout for this fragment
         return view;
@@ -134,6 +157,35 @@ public class FaceEffectFragment extends Fragment {
             mCameraSource.takePicture(null, mPicture);
             showLoading("Capturing...");
         }
+    };
+
+    public View.OnClickListener mFilterOnclickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.filter1:
+                    Log.d(TAG, "filter1 pressed ");
+                    mSelectedFilter = DEFAULT_FACE_EFFECT;
+                    break;
+
+                case R.id.filter2:
+                    Log.d(TAG, "filter2 pressed");
+                    mSelectedFilter = EMOJI_EFFECT;
+                    break;
+
+                case R.id.filter3:
+                    Log.d(TAG, "filter3 pressed ");
+                    mSelectedFilter = LIGHTBULB_EFFECT;
+                    break;
+
+                default:
+                    break;
+            }
+            if(mFaceTracker!=null){
+                mFaceTracker.setSelectedFilter(mSelectedFilter);
+            }
+        }
+
     };
 
     CameraSource.PictureCallback mPicture = new CameraSource.PictureCallback() {
@@ -387,7 +439,8 @@ public class FaceEffectFragment extends Fragment {
         MultiProcessor.Factory<Face> factory = new MultiProcessor.Factory<Face>() {
             @Override
             public Tracker<Face> create(Face face) {
-                return new FaceTracker(mGraphicOverlay, context, mIsFrontFacing);
+                mFaceTracker = new FaceTracker(mGraphicOverlay, context, mIsFrontFacing, mSelectedFilter);
+                return mFaceTracker;
             }
         };
 

@@ -1,40 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/topLayout"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:keepScreenOn="true"
+    android:orientation="vertical"
     tools:context=".FaceEffectFragment">
 
-    <com.example.ymchan.ymfyp.Camera.CameraSourcePreview
-        android:id="@+id/preview"
+    <RelativeLayout
+        android:id="@+id/topLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="490dp"
+        android:keepScreenOn="true"
+        android:orientation="vertical">
 
-        <com.example.ymchan.ymfyp.Camera.GraphicOverlay
-            android:id="@+id/faceOverlay"
+        <com.example.ymchan.ymfyp.Camera.CameraSourcePreview
+            android:id="@+id/preview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
 
-    </com.example.ymchan.ymfyp.Camera.CameraSourcePreview>
+            <com.example.ymchan.ymfyp.Camera.GraphicOverlay
+                android:id="@+id/faceOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-    <ImageButton
-        android:id="@+id/flipButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/switch_cameras" />
+        </com.example.ymchan.ymfyp.Camera.CameraSourcePreview>
 
-    <ImageButton
-        android:id="@+id/capButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/capture_button" />
+    </RelativeLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/flipButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/switch_cameras" />
+
+        <ImageButton
+            android:id="@+id/filter1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/face_fx_default" />
+
+        <ImageButton
+            android:id="@+id/filter2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/capture_button" />
+
+        <ImageButton
+            android:id="@+id/filter3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/capture_button" />
+
+        <ImageButton
+            android:id="@+id/capButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/capture_button" />
+
+    </LinearLayout>
+
+</LinearLayout>

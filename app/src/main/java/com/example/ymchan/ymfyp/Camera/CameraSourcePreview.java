@@ -151,33 +151,44 @@ public class CameraSourcePreview extends ViewGroup {
         final int viewWidth = right - left;
         final int viewHeight = bottom - top;
 
-        int childWidth;
-        int childHeight;
-        int childXOffset = 0;
-        int childYOffset = 0;
-        float widthRatio = (float) viewWidth / (float) previewWidth;
-        float heightRatio = (float) viewHeight / (float) previewHeight;
+        //comment by yan min 18/12/2018:
+        //I commented the whole section below off because hard coded the size in xml in order to save the image correctly.
+        //not the ideal solution but will do for now.
 
-        // To fill the view with the camera preview, while also preserving the correct aspect ratio,
-        // it is usually necessary to slightly oversize the child and to crop off portions along one
-        // of the dimensions.  We scale up based on the dimension requiring the most correction, and
-        // compute a crop offset for the other dimension.
-        if (widthRatio > heightRatio) {
-            childWidth = viewWidth;
-            childHeight = (int) ((float) previewHeight * widthRatio);
-            childYOffset = (childHeight - viewHeight) / 2;
-        } else {
-            childWidth = (int) ((float) previewWidth * heightRatio);
-            childHeight = viewHeight;
-            childXOffset = (childWidth - viewWidth) / 2;
-        }
-
+//        int childWidth;
+//        int childHeight;
+//        int childXOffset = 0;
+//        int childYOffset = 0;
+//        float widthRatio = (float) viewWidth / (float) previewWidth;
+//        float heightRatio = (float) viewHeight / (float) previewHeight;
+//
+//        // To fill the view with the camera preview, while also preserving the correct aspect ratio,
+//        // it is usually necessary to slightly oversize the child and to crop off portions along one
+//        // of the dimensions.  We scale up based on the dimension requiring the most correction, and
+//        // compute a crop offset for the other dimension.
+//        if (widthRatio > heightRatio) {
+//            childWidth = viewWidth;
+//            childHeight = (int) ((float) previewHeight * widthRatio);
+//            childYOffset = (childHeight - viewHeight) / 2;
+//        } else {
+//            childWidth = (int) ((float) previewWidth * heightRatio);
+//            childHeight = viewHeight;
+//            childXOffset = (childWidth - viewWidth) / 2;
+//        }
+//
+//        for (int i = 0; i < getChildCount(); ++i) {
+//            // One dimension will be cropped.  We shift child over or up by this offset and adjust
+//            // the size to maintain the proper aspect ratio.
+//            getChildAt(i).layout(
+//                    -1 * childXOffset, -1 * childYOffset,
+//                    childWidth - childXOffset, childHeight - childYOffset);
+//        }
         for (int i = 0; i < getChildCount(); ++i) {
             // One dimension will be cropped.  We shift child over or up by this offset and adjust
             // the size to maintain the proper aspect ratio.
             getChildAt(i).layout(
-                    -1 * childXOffset, -1 * childYOffset,
-                    childWidth - childXOffset, childHeight - childYOffset);
+                    0, 0,
+                    viewWidth, viewHeight);
         }
 
         try {

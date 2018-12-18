@@ -65,6 +65,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         PropertiesBSFragment.Properties,
         EmojiBSFragment.EmojiListener,
         StickerBSFragment.StickerListener,
+        FramesBSFragment.FramesListener,
         FilterListener,
         OnSaveBitmap {
 
@@ -85,6 +86,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     private PropertiesBSFragment mPropertiesBSFragment;
     private EmojiBSFragment mEmojiBSFragment;
     private StickerBSFragment mStickerBSFragment;
+    private FramesBSFragment mFramesBSFragment;
 
     private ProgressDialog mProgressDialog;
 
@@ -125,6 +127,9 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
 
         mStickerBSFragment = new StickerBSFragment();
         mStickerBSFragment.setStickerListener(this);
+
+        mFramesBSFragment = new FramesBSFragment();
+        mFramesBSFragment.setFramesListener(this);
 
         mPhotoEditor = new PhotoEditor.Builder(getActivity(), mPhotoEditorView)
                 .setPinchTextScalable(true) // set flag to make text scalable when pinch
@@ -443,6 +448,9 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
             case STICKER:
                 mStickerBSFragment.show(getFragmentManager(), mStickerBSFragment.getTag());
                 break;
+            case FRAMES:
+                mFramesBSFragment.show(getFragmentManager(), mFramesBSFragment.getTag());
+                break;
         }
     }
 
@@ -501,6 +509,13 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     public void onStickerClick(Bitmap bitmap) {
         mPhotoEditor.addImage(bitmap);
         mTxtCurrentTool.setText(R.string.label_sticker);
+    }
+
+    //Override methods for FramesBSFragment.FramesListener
+    @Override
+    public void onFrameClick(Bitmap bitmap) {
+        mPhotoEditor.addImage(bitmap);
+        mTxtCurrentTool.setText(R.string.label_frames);
     }
 
     //Override methods for FilterListener

@@ -55,6 +55,7 @@ public class FaceTracker extends Tracker<Face> {
     private Context mContext;
     private boolean mIsFrontFacing;
     private FaceData mFaceData;
+    private int mSelectedFilter;
 
     // Subjects may move too quickly to for the system to detect their detect features,
     // or they may move so their features are out of the tracker's detection range.
@@ -68,10 +69,11 @@ public class FaceTracker extends Tracker<Face> {
     private boolean mPreviousIsRightEyeOpen = true;
 
 
-    public FaceTracker(GraphicOverlay overlay, Context context, boolean isFrontFacing) {
+    public FaceTracker(GraphicOverlay overlay, Context context, boolean isFrontFacing, int selectedFilter) {
         mOverlay = overlay;
         mContext = context;
         mIsFrontFacing = isFrontFacing;
+        mSelectedFilter = selectedFilter;
         mFaceData = new FaceData();
     }
 
@@ -84,7 +86,15 @@ public class FaceTracker extends Tracker<Face> {
      */
     @Override
     public void onNewItem(int id, Face face) {
-        mFaceGraphic = new FaceGraphic(mOverlay, mContext, mIsFrontFacing);
+        mFaceGraphic = new FaceGraphic(mOverlay, mContext, mIsFrontFacing, mSelectedFilter);
+    }
+
+    //Added by yan min 18/12/2018:
+    //enable multiple filters.
+    public void setSelectedFilter (int selectedFilter){
+        mOverlay.remove(mFaceGraphic); //first remove the original applied filter.
+        mSelectedFilter = selectedFilter;
+        mFaceGraphic = new FaceGraphic(mOverlay, mContext, mIsFrontFacing, mSelectedFilter);
     }
 
     /**

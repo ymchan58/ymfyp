@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.ymchan.ymfyp.Image.ResultHolder;
 
@@ -18,6 +19,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ReceiveActivity extends AppCompatActivity {
+
+    private final static String TAG = "ymfyp.ReceiveActivity";
 
     public static final String EXTRA_MESSAGE = "com.example.ymchan.ymfyp.MESSAGE";
 
@@ -32,15 +35,27 @@ public class ReceiveActivity extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         Uri receivedUri = (Uri)receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM);
 
+        //find out what we are dealing with
+        String receivedType = receivedIntent.getType();
+
         //get the action
         String receivedAction = receivedIntent.getAction();
 
-        //find out what we are dealing with
-        String receivedType = receivedIntent.getType();
+        Log.d(TAG, receivedType);
+
+//        if(receivedAction.equals(Intent.ACTION_EDIT)){
+//            if (receivedType.startsWith("image/")) {
+//                receivedUri = receivedIntent.getData();
+//            }
+//        }
+
+        Log.d(TAG, receivedUri.toString());
+
 
         //make sure it's an action and type we can handle
 
         if(receivedAction.equals(Intent.ACTION_SEND)){ //content is being shared
+//        if(receivedAction.equals(Intent.ACTION_SEND) || receivedAction.equals(Intent.ACTION_EDIT)){ //content is being shared
             // Figure out what to do based on the intent type
             if (receivedIntent.getType().indexOf("image/") != -1) {
                 Bitmap image = null;

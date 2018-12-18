@@ -18,25 +18,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 /**
- * Created by yan min on 5/10/2018
- *
- * StickerBSFragment is fragment for stickers.
- * referenced from PhotoEditor test app.
+ * Created by yan min on 16/12/2018
+ * FramesBSFragment is fragment for stickers.
+ * referenced from PhotoEditor test app. StickerBSFragment
  */
-public class StickerBSFragment extends BottomSheetDialogFragment {
+public class FramesBSFragment extends BottomSheetDialogFragment {
 
-    public StickerBSFragment() {
+    public FramesBSFragment() {
         // Required empty public constructor
     }
 
-    private StickerListener mStickerListener;
+    private FramesBSFragment.FramesListener mFramesListener;
 
-    public void setStickerListener(StickerListener stickerListener) {
-        mStickerListener = stickerListener;
+    public void setFramesListener(FramesBSFragment.FramesListener framesListener) {
+        mFramesListener = framesListener;
     }
 
-    public interface StickerListener {
-        void onStickerClick(Bitmap bitmap);
+    public interface FramesListener {
+        void onFrameClick(Bitmap bitmap);
     }
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
@@ -72,8 +71,8 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
         rvEmoji.setLayoutManager(gridLayoutManager);
-        StickerAdapter stickerAdapter = new StickerAdapter();
-        rvEmoji.setAdapter(stickerAdapter);
+        FramesBSFragment.FramesAdapter frameAdapter = new FramesBSFragment.FramesAdapter();
+        rvEmoji.setAdapter(frameAdapter);
     }
 
     @Override
@@ -82,40 +81,40 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
 
     }
 
-    public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.ViewHolder> {
+    public class FramesAdapter extends RecyclerView.Adapter<FramesBSFragment.FramesAdapter.ViewHolder> {
 
-        int[] stickerList = new int[]{R.drawable.black_hat, R.drawable.pink_hat, R.drawable.speechbubble};
+        int[] framesList = new int[]{R.drawable.polaroid_frame};
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public FramesBSFragment.FramesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_sticker, parent, false);
-            return new ViewHolder(view);
+            return new FramesBSFragment.FramesAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.imgSticker.setImageResource(stickerList[position]);
+        public void onBindViewHolder(FramesBSFragment.FramesAdapter.ViewHolder holder, int position) {
+            holder.imgFrame.setImageResource(framesList[position]);
         }
 
         @Override
         public int getItemCount() {
-            return stickerList.length;
+            return framesList.length;
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            ImageView imgSticker;
+            ImageView imgFrame;
 
             ViewHolder(View itemView) {
                 super(itemView);
-                imgSticker = itemView.findViewById(R.id.imgSticker);
+                imgFrame = itemView.findViewById(R.id.imgSticker);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mStickerListener != null) {
-                            mStickerListener.onStickerClick(
+                        if (mFramesListener != null) {
+                            mFramesListener.onFrameClick(
                                     BitmapFactory.decodeResource(getResources(),
-                                            stickerList[getLayoutPosition()]));
+                                            framesList[getLayoutPosition()]));
                         }
                         dismiss();
                     }
@@ -138,5 +137,4 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
     private String getEmojiByUnicode(int unicode) {
         return new String(Character.toChars(unicode));
     }
-
 }
