@@ -13,6 +13,7 @@
     <string name="home_btn_camera">Camera</string>
     <string name="home_btn_folder">Gallery</string>
     <string name="home_btn_arcam">Face effect Cam</string>
+    <string name="home_btn_customsticker">Custom Sticker</string>
 
     <!-- CameraFragment -->
 
@@ -43,4 +44,9 @@
     <string name="label_adjust">Adjust</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+
+    <!-- Scratch Custom Sticker-->
+    <string name="scratch_btn_reset">Reset</string>
+    <string name="scratch_btn_save">Save</string>
+
 </resources>

@@ -14,6 +14,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.ymchan.ymfyp.Camera.CameraSourcePreview;
 import com.example.ymchan.ymfyp.Camera.GraphicOverlay;
@@ -52,7 +55,7 @@ import java.lang.*;
  * Created by yan min on 12/12/2018
  * For Face effect cam
  */
-public class FaceEffectFragment extends Fragment {
+public class FaceEffectFragment extends Fragment implements EmojiBSFragment.EmojiListener{
 
     private final static String TAG = "ymfyp.FacefxFragment";
 
@@ -70,11 +73,17 @@ public class FaceEffectFragment extends Fragment {
     private GraphicOverlay mGraphicOverlay;
     private boolean mIsFrontFacing = true;
     private int mSelectedFilter = DEFAULT_FACE_EFFECT;
+    private Drawable mSelectedEmoji;
     private FaceTracker mFaceTracker;
+
+    private EmojiBSFragment mEmojiBSFragment;
+    private TextView mEmojiTextView;
 
     private ImageButton filter1Btn;
     private ImageButton filter2Btn;
     private ImageButton filter3Btn;
+
+    private boolean mIsFilter2Selected = false;
 
     private ProgressDialog mProgressDialog;
 
@@ -106,11 +115,24 @@ public class FaceEffectFragment extends Fragment {
 
         //filter selection buttons
         filter1Btn = (ImageButton) view.findViewById(R.id.filter1);
-        filter2Btn = (ImageButton) view.findViewById(R.id.filter2);
+//        filter2Btn = (ImageButton) view.findViewById(R.id.filter2);
         filter3Btn = (ImageButton) view.findViewById(R.id.filter3);
 
+        mIsFilter2Selected = false;
+
+        mEmojiBSFragment = new EmojiBSFragment();
+        mEmojiBSFragment.setEmojiListener(this);
+
+        mEmojiTextView = view.findViewById(R.id.emojiSelectedFilter);
+        mEmojiTextView.setTextSize(50);
+        mEmojiTextView.setDrawingCacheEnabled(true);
+        mEmojiTextView.setText("\uD83D\uDE04");
+
+        mSelectedEmoji = getEmoji();
+//        filter2Btn = ((ImageButton) view).setImageDrawable(mSelectedEmoji);
+
         filter1Btn.setOnClickListener(mFilterOnclickListener);
-        filter2Btn.setOnClickListener(mFilterOnclickListener);
+        mEmojiTextView.setOnClickListener(mFilterOnclickListener);
         filter3Btn.setOnClickListener(mFilterOnclickListener);
 
         // Inflate the layout for this fragment
@@ -168,9 +190,15 @@ public class FaceEffectFragment extends Fragment {
                     mSelectedFilter = DEFAULT_FACE_EFFECT;
                     break;
 
-                case R.id.filter2:
+                case R.id.emojiSelectedFilter:
                     Log.d(TAG, "filter2 pressed");
                     mSelectedFilter = EMOJI_EFFECT;
+                    if(!mIsFilter2Selected){
+                        mEmojiTextView.setText("\uD83D\uDE04");
+                        mSelectedEmoji = getEmoji();
+                        mIsFilter2Selected = true;
+                    }
+                    mEmojiBSFragment.show(getFragmentManager(), mEmojiBSFragment.getTag());
                     break;
 
                 case R.id.filter3:
@@ -182,7 +210,7 @@ public class FaceEffectFragment extends Fragment {
                     break;
             }
             if(mFaceTracker!=null){
-                mFaceTracker.setSelectedFilter(mSelectedFilter);
+                mFaceTracker.setSelectedFilter(mSelectedFilter, mSelectedEmoji);
             }
         }
 
@@ -439,7 +467,7 @@ public class FaceEffectFragment extends Fragment {
         MultiProcessor.Factory<Face> factory = new MultiProcessor.Factory<Face>() {
             @Override
             public Tracker<Face> create(Face face) {
-                mFaceTracker = new FaceTracker(mGraphicOverlay, context, mIsFrontFacing, mSelectedFilter);
+                mFaceTracker = new FaceTracker(mGraphicOverlay, context, mIsFrontFacing, mSelectedFilter, mSelectedEmoji);
                 return mFaceTracker;
             }
         };
@@ -473,4 +501,19 @@ public class FaceEffectFragment extends Fragment {
         return detector;
     }
 
+    //Override methods for EmojiBSFragment.EmojiListener
+    @Override
+    public void onEmojiClick(String emojiUnicode) {
+        Log.d(TAG, "onEmojiClick, unicode = " + emojiUnicode);
+        mEmojiTextView.setText(emojiUnicode);
+        mSelectedEmoji = getEmoji();
+    }
+
+    public Drawable getEmoji(){
+        Drawable emojiDrawable;
+        mEmojiTextView.buildDrawingCache();
+        emojiDrawable = new BitmapDrawable(getResources(), mEmojiTextView.getDrawingCache());
+        Log.d(TAG, "getEmoji " + emojiDrawable);
+        return emojiDrawable;
+    }
 }

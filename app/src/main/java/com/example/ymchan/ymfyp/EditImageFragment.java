@@ -88,6 +88,8 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     private StickerBSFragment mStickerBSFragment;
     private FramesBSFragment mFramesBSFragment;
 
+    private ImageView mSelectedFrameImageView;
+
     private ProgressDialog mProgressDialog;
 
     private TextView mTxtCurrentTool;
@@ -130,6 +132,8 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
 
         mFramesBSFragment = new FramesBSFragment();
         mFramesBSFragment.setFramesListener(this);
+
+        mSelectedFrameImageView = view.findViewById(R.id.selectedFrameView);
 
         mPhotoEditor = new PhotoEditor.Builder(getActivity(), mPhotoEditorView)
                 .setPinchTextScalable(true) // set flag to make text scalable when pinch
@@ -514,8 +518,11 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     //Override methods for FramesBSFragment.FramesListener
     @Override
     public void onFrameClick(Bitmap bitmap) {
-        mPhotoEditor.addImage(bitmap);
-        mTxtCurrentTool.setText(R.string.label_frames);
+        ViewGroup.LayoutParams params = mPhotoEditorView.getLayoutParams();
+        mSelectedFrameImageView.setLayoutParams(params);
+        mSelectedFrameImageView.setImageBitmap(bitmap);
+//        mPhotoEditor.addImage(bitmap);
+//        mTxtCurrentTool.setText(R.string.label_frames);
     }
 
     //Override methods for FilterListener

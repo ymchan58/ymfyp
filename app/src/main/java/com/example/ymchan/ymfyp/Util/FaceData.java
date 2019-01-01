@@ -54,6 +54,7 @@ public class FaceData {
     // Facial states
     private boolean mLeftEyeOpen;
     private boolean mRightEyeOpen;
+    private boolean mMouthOpen; //added by ym
     private boolean mSmiling;
 
     // Facial landmarks
@@ -133,6 +134,14 @@ public class FaceData {
 
     public void setRightEyeOpen(boolean rightEyeOpen) {
         this.mRightEyeOpen = rightEyeOpen;
+    }
+
+    public boolean isMouthOpen() {
+        return mMouthOpen;
+    } //added by ym
+
+    public void setMouthOpen(boolean mouthOpen) {
+        this.mMouthOpen = mouthOpen;
     }
 
     public boolean isSmiling() {

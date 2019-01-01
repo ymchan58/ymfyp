@@ -31,6 +31,8 @@ package com.example.ymchan.ymfyp.Util;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.example.ymchan.ymfyp.Camera.GraphicOverlay;
 import com.google.android.gms.vision.Tracker;
@@ -56,6 +58,7 @@ public class FaceTracker extends Tracker<Face> {
     private boolean mIsFrontFacing;
     private FaceData mFaceData;
     private int mSelectedFilter;
+    private Drawable mSelectedEmoji;
 
     // Subjects may move too quickly to for the system to detect their detect features,
     // or they may move so their features are out of the tracker's detection range.
@@ -69,11 +72,12 @@ public class FaceTracker extends Tracker<Face> {
     private boolean mPreviousIsRightEyeOpen = true;
 
 
-    public FaceTracker(GraphicOverlay overlay, Context context, boolean isFrontFacing, int selectedFilter) {
+    public FaceTracker(GraphicOverlay overlay, Context context, boolean isFrontFacing, int selectedFilter, Drawable selectedEmoji) {
         mOverlay = overlay;
         mContext = context;
         mIsFrontFacing = isFrontFacing;
         mSelectedFilter = selectedFilter;
+        mSelectedEmoji = selectedEmoji;
         mFaceData = new FaceData();
     }
 
@@ -86,15 +90,16 @@ public class FaceTracker extends Tracker<Face> {
      */
     @Override
     public void onNewItem(int id, Face face) {
-        mFaceGraphic = new FaceGraphic(mOverlay, mContext, mIsFrontFacing, mSelectedFilter);
+        mFaceGraphic = new FaceGraphic(mOverlay, mContext, mIsFrontFacing, mSelectedFilter, mSelectedEmoji);
     }
 
     //Added by yan min 18/12/2018:
     //enable multiple filters.
-    public void setSelectedFilter (int selectedFilter){
+    public void setSelectedFilter (int selectedFilter, Drawable selectedEmoji){
         mOverlay.remove(mFaceGraphic); //first remove the original applied filter.
         mSelectedFilter = selectedFilter;
-        mFaceGraphic = new FaceGraphic(mOverlay, mContext, mIsFrontFacing, mSelectedFilter);
+        mSelectedEmoji = selectedEmoji;
+        mFaceGraphic = new FaceGraphic(mOverlay, mContext, mIsFrontFacing, mSelectedFilter, mSelectedEmoji);
     }
 
     /**
@@ -146,6 +151,19 @@ public class FaceTracker extends Tracker<Face> {
             mFaceData.setRightEyeOpen(rightOpenScore > EYE_CLOSED_THRESHOLD);
             mPreviousIsRightEyeOpen = mFaceData.isRightEyeOpen();
         }
+
+        //Added by yan min 19/12/2018
+        // Determine if mouth is open!
+        final float MOUTH_OPEN_THRESHOLD = 1.2f;
+//        float nosePosX = mFaceData.getNoseBasePosition().x;
+        float nosePosY = mFaceData.getNoseBasePosition().y;
+        float mouthPosY = mFaceData.getMouthBottomPosition().y;
+        float noseMouthRatio = mouthPosY/nosePosY;
+        Log.d(TAG, "nosePosY = " + nosePosY);
+        Log.d(TAG, "mouthPosY = " + mouthPosY);
+        Log.d(TAG, "noseMouthDiff = " + noseMouthRatio);
+        mFaceData.setMouthOpen(noseMouthRatio > MOUTH_OPEN_THRESHOLD);
+
 
         // See if there's a smile!
         // Determine if person is smiling.

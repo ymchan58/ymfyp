@@ -36,7 +36,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
+import com.example.ymchan.ymfyp.FaceEffectFragment;
 import com.example.ymchan.ymfyp.R;
 
 import com.example.ymchan.ymfyp.Camera.GraphicOverlay;
@@ -77,6 +79,13 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
     private Drawable mHappyStarGraphic;
     private Drawable mHatGraphic;
 
+    //Added by yan min
+    private Drawable mSelectedEmoji;
+
+    private Drawable mSelectedEmojiGraphic;
+    private Drawable mLightbulbOffGraphic;
+    private Drawable mLightbulbOnGraphic;
+
     // We want each iris to move independently,
     // so each one gets its own physics engine.
     private EyePhysics mLeftPhysics = new EyePhysics();
@@ -93,13 +102,14 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
 
     //Added by yan min 18/12/2018:
     //enable multiple filters.
-    FaceGraphic(GraphicOverlay overlay, Context context, boolean isFrontFacing, int filter) {
+    FaceGraphic(GraphicOverlay overlay, Context context, boolean isFrontFacing, int filter, Drawable selectedEmoji) {
         super(overlay);
         mIsFrontFacing = isFrontFacing;
         Resources resources = context.getResources();
         initializePaints(resources);
         initializeGraphics(resources);
         selectedFilter = filter;
+        mSelectedEmoji = selectedEmoji;
     }
 
     private void initializeGraphics(Resources resources) {
@@ -107,6 +117,11 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
         mMustacheGraphic = resources.getDrawable(R.drawable.mustache);
         mHappyStarGraphic = resources.getDrawable(R.drawable.happy_star);
         mHatGraphic = resources.getDrawable(R.drawable.red_hat);
+        mLightbulbOffGraphic = resources.getDrawable(R.drawable.facefx_lightbulb_off);
+        mLightbulbOnGraphic = resources.getDrawable(R.drawable.facefx_lightbulb_on);
+//        mSelectedEmojiGraphic = mSelectedEmoji;
+//        Log.d(TAG, "initialise graphics mSelectedEmoji = " + mSelectedEmoji);
+        mSelectedEmojiGraphic = resources.getDrawable(R.drawable.facefx_emoji_default);
     }
 
     private void initializePaints(Resources resources) {
@@ -203,6 +218,9 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
         PointF mouthBottomPosition = new PointF(translateX(detectMouthBottomPosition.x),
                 translateY(detectMouthBottomPosition.y));
 
+        // Mouth state
+        boolean mouthOpen = faceData.isMouthOpen();
+
         // Smile state
         boolean smiling = faceData.isSmiling();
 
@@ -243,9 +261,12 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
                 drawHat(canvas, position, width, height, noseBasePosition);
             }
         } else if (selectedFilter == EMOJI_EFFECT) {
-
+            drawEmoji(canvas, position, width, mouthBottomPosition, noseBasePosition);
         } else if (selectedFilter == LIGHTBULB_EFFECT){
-
+            drawLightbulbOff(canvas, position, width, height, noseBasePosition);
+            if (mouthOpen) {
+                drawLightbulbOn(canvas, position, width, height, noseBasePosition);
+            }
         }
     }
 
@@ -328,6 +349,57 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
         int bottom = (int)(hatCenterY + (hatHeight / 2));
         mHatGraphic.setBounds(left, top, right, bottom);
         mHatGraphic.draw(canvas);
+    }
+
+    //Added by ym 19/12/2018
+    //Face filter 3: lightbulb on/off
+    private void drawLightbulbOff(Canvas canvas, PointF facePosition, float faceWidth, float faceHeight, PointF noseBasePosition) {
+        final float LIGHTBULB_FACE_WIDTH_RATIO = (float)(1.0 / 2.0);
+        final float LIGHTBULB_FACE_HEIGHT_RATIO = (float)(1.0 / 3.0);
+        final float LIGHTBULB_CENTER_Y_OFFSET_FACTOR = (float)(1.0 / 35.0);
+
+        float hatCenterY = facePosition.y + (faceHeight * LIGHTBULB_CENTER_Y_OFFSET_FACTOR);
+        float hatWidth = faceWidth * LIGHTBULB_FACE_WIDTH_RATIO;
+        float hatHeight = faceHeight * LIGHTBULB_FACE_HEIGHT_RATIO;
+
+        int left = (int)(noseBasePosition.x - (hatWidth / 2));
+        int right = (int)(noseBasePosition.x + (hatWidth / 2));
+        int top = (int)(hatCenterY - (hatHeight / 2));
+        int bottom = (int)(hatCenterY + (hatHeight / 2));
+        mLightbulbOffGraphic.setBounds(left, top, right, bottom);
+        mLightbulbOffGraphic.draw(canvas);
+    }
+
+    private void drawLightbulbOn(Canvas canvas, PointF facePosition, float faceWidth, float faceHeight, PointF noseBasePosition) {
+        final float LIGHTBULB_FACE_WIDTH_RATIO = (float)(1.0 / 2.0);
+        final float LIGHTBULB_FACE_HEIGHT_RATIO = (float)(1.0 / 3.0);
+        final float LIGHTBULB_CENTER_Y_OFFSET_FACTOR = (float)(1.0 / 35.0);
+
+        float hatCenterY = facePosition.y + (faceHeight * LIGHTBULB_CENTER_Y_OFFSET_FACTOR);
+        float hatWidth = faceWidth * LIGHTBULB_FACE_WIDTH_RATIO;
+        float hatHeight = faceHeight * LIGHTBULB_FACE_HEIGHT_RATIO;
+
+        int left = (int)(noseBasePosition.x - (hatWidth / 2));
+        int right = (int)(noseBasePosition.x + (hatWidth / 2));
+        int top = (int)(hatCenterY - (hatHeight / 2));
+        int bottom = (int)(hatCenterY + (hatHeight / 2));
+        mLightbulbOnGraphic.setBounds(left, top, right, bottom);
+        mLightbulbOnGraphic.draw(canvas);
+    }
+
+    private void drawEmoji(Canvas canvas, PointF facePosition, float faceWidth, PointF mouthBottomPosition, PointF noseBasePosition) {
+        final float NOSE_FACE_WIDTH_RATIO = (float)(1 / 5.0);
+        float noseWidth = faceWidth * NOSE_FACE_WIDTH_RATIO;
+        int left = (int)(noseBasePosition.x - (faceWidth / 1.7));
+        int right = (int)(noseBasePosition.x + (faceWidth / 1.7));
+        int top = (int)(facePosition.y * 1.05);
+        int bottom = (int)(mouthBottomPosition.y * 1.2);
+
+        if(mSelectedEmoji != null){
+            mSelectedEmojiGraphic = mSelectedEmoji;
+        }
+        mSelectedEmojiGraphic.setBounds(left, top, right, bottom);
+        mSelectedEmojiGraphic.draw(canvas);
     }
 
 }

@@ -30,41 +30,43 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/flipButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/switch_cameras" />
 
         <ImageButton
             android:id="@+id/filter1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/white"
             android:src="@drawable/face_fx_default" />
 
-        <ImageButton
-            android:id="@+id/filter2"
+        <TextView
+            android:id="@+id/emojiSelectedFilter"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/capture_button" />
+            android:layout_height="match_parent"
+            android:text="TextView"
+            android:textColor="@color/black" />
 
         <ImageButton
             android:id="@+id/filter3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/white"
             android:src="@drawable/capture_button" />
 
         <ImageButton
             android:id="@+id/capButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/capture_button" />
 

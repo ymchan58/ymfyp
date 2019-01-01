@@ -67,17 +67,17 @@ public class CameraFragment extends Fragment implements CameraFragmentManager.Ca
             mCamera.setCropOutput(cropOutput);
         }
 
-        //26-Aug-2018 added: implement square aspect ratio camera.
-        //to-do: allow user to switch between three mods, 1:1, 3:4, full.
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-//        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
-
-        if(mCameraFrame != null) {
-            mCameraFrame.setLayoutParams(new FrameLayout.LayoutParams(width,width));
-        }
+        //yan min comment 19/12/2018: temp scrap this idea of selecting multiple aspect ratio.
+//        //26-Aug-2018 added: implement square aspect ratio camera.
+//        //to-do: allow user to switch between three mods, 1:1, 3:4, full.
+//        DisplayMetrics displayMetrics = new DisplayMetrics();
+//        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+////        int height = displayMetrics.heightPixels;
+//        int width = displayMetrics.widthPixels;
+//
+//        if(mCameraFrame != null) {
+//            mCameraFrame.setLayoutParams(new FrameLayout.LayoutParams(width,width));
+//        }
     }
 
     @Override

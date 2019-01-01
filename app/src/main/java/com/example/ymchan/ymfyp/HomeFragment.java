@@ -43,6 +43,7 @@ public class HomeFragment extends Fragment {
     private LinearLayout btnCamera = null;
     private LinearLayout btnFolder = null;
     private LinearLayout btnARCamera = null;
+    private LinearLayout btnCustomSticker = null;
 
     static final int SELECT_FILE = 1;
 
@@ -72,6 +73,7 @@ public class HomeFragment extends Fragment {
         btnCamera = view.findViewById(R.id.camera_icn);
         btnFolder = view.findViewById(R.id.folder_icn);
         btnARCamera = view.findViewById(R.id.arcamera_icn);
+        btnCustomSticker = view.findViewById(R.id.customsticker_icn);
 
         return view;
     }
@@ -100,6 +102,7 @@ public class HomeFragment extends Fragment {
         btnCamera.setOnClickListener(mOnclickListener);
         btnFolder.setOnClickListener(mOnclickListener);
         btnARCamera.setOnClickListener(mOnclickListener);
+        btnCustomSticker.setOnClickListener(mOnclickListener);
     }
 
     public View.OnClickListener mOnclickListener = new View.OnClickListener() {
@@ -132,6 +135,14 @@ public class HomeFragment extends Fragment {
                     MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
                             new FaceEffectFragment(),
                             FaceEffectFragment.class.getName(),
+                            0);
+                    break;
+
+                case R.id.customsticker_icn:
+                    Log.d(TAG, "customsticker_icn pressed ");
+                    MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+                            new CustomStickerFragment(),
+                            CustomStickerFragment.class.getName(),
                             0);
                     break;
 
