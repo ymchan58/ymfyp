@@ -45,7 +45,7 @@ public class EditingToolsAdapter extends RecyclerView.Adapter<EditingToolsAdapte
         mToolList.add(new ToolModel("Sticker", R.drawable.ic_sticker, ToolType.STICKER));
 
         //added by ym 16/12/2018 to implement frames:
-        mToolList.add(new ToolModel("Frames", R.drawable.ic_sticker, ToolType.FRAMES));
+//        mToolList.add(new ToolModel("Frames", R.drawable.ic_sticker, ToolType.FRAMES));
     }
 
 //    public EditingToolsAdapter() {

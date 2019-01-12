@@ -13,7 +13,7 @@
         <com.example.ymchan.ymfyp.Util.WScratchView
             android:id="@+id/scratch_view"
             android:layout_width="wrap_content"
-            android:layout_height="300dp"
+            android:layout_height="400dp"
             android:layout_centerInParent="true"
             wsv:antiAlias="true"
             wsv:revealSize="20dp"

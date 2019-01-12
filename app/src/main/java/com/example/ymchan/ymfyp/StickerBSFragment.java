@@ -17,6 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.ymchan.ymfyp.Util.CustomStickersDatabase;
+import com.example.ymchan.ymfyp.Util.StickerList;
+
+import java.util.List;
+
 /**
  * Created by yan min on 5/10/2018
  *
@@ -24,6 +29,8 @@ import android.widget.ImageView;
  * referenced from PhotoEditor test app.
  */
 public class StickerBSFragment extends BottomSheetDialogFragment {
+
+    private CustomStickersDatabase mCustomStickerDB;
 
     public StickerBSFragment() {
         // Required empty public constructor
@@ -84,7 +91,9 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
 
     public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.ViewHolder> {
 
-        int[] stickerList = new int[]{R.drawable.black_hat, R.drawable.pink_hat, R.drawable.bubble_speech, R.drawable.bubble_thought, R.drawable.bubble_exclamation};
+//        int[] stickerList = new int[]{R.drawable.black_hat, R.drawable.pink_hat, R.drawable.bubble_speech, R.drawable.bubble_thought, R.drawable.bubble_exclamation};
+        StickerList stickers = new StickerList(getContext());
+        List<Bitmap> stickerList = stickers.getStickerList();
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -94,12 +103,14 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.imgSticker.setImageResource(stickerList[position]);
+//            holder.imgSticker.setImageResource(stickerList[position]);
+            holder.imgSticker.setImageBitmap(stickerList.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return stickerList.length;
+//            return stickerList.length;
+            return stickerList.size();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
@@ -114,8 +125,9 @@ public class StickerBSFragment extends BottomSheetDialogFragment {
                     public void onClick(View v) {
                         if (mStickerListener != null) {
                             mStickerListener.onStickerClick(
-                                    BitmapFactory.decodeResource(getResources(),
-                                            stickerList[getLayoutPosition()]));
+//                                    BitmapFactory.decodeResource(getResources(),
+//                                            stickerList[getLayoutPosition()]));
+                                    stickerList.get(getLayoutPosition()));
                         }
                         dismiss();
                     }

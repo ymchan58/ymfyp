@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ymchan.ymfyp.Image.ResultHolder;
+import com.example.ymchan.ymfyp.Util.CustomStickersDatabase;
 import com.example.ymchan.ymfyp.Util.EditingToolsAdapter;
 import com.example.ymchan.ymfyp.Util.FilterListener;
 import com.example.ymchan.ymfyp.Util.FilterViewAdapter;
@@ -101,6 +102,8 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     private ConstraintSet mConstraintSet = new ConstraintSet();
     private boolean mIsFilterVisible;
 
+    private CustomStickersDatabase mCustomStickerDB;
+
     public EditImageFragment() {
         // Required empty public constructor
     }
@@ -134,6 +137,8 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         mFramesBSFragment.setFramesListener(this);
 
         mSelectedFrameImageView = view.findViewById(R.id.selectedFrameView);
+
+        mCustomStickerDB = new CustomStickersDatabase(getContext());
 
         mPhotoEditor = new PhotoEditor.Builder(getActivity(), mPhotoEditorView)
                 .setPinchTextScalable(true) // set flag to make text scalable when pinch

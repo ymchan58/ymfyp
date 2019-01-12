@@ -37,6 +37,7 @@ import static android.app.Activity.RESULT_OK;
 public class HomeFragment extends Fragment {
 
     private final static String TAG = "ymfyp.HomeFragment";
+    private int mPressed;
 
     //views
     private ImageView btnAbout = null;
@@ -127,6 +128,7 @@ public class HomeFragment extends Fragment {
 
                 case R.id.folder_icn:
                     Log.d(TAG, "folder_icn pressed ");
+                    mPressed = 0;
                     selectImage();
                     break;
 
@@ -140,10 +142,8 @@ public class HomeFragment extends Fragment {
 
                 case R.id.customsticker_icn:
                     Log.d(TAG, "customsticker_icn pressed ");
-                    MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
-                            new CustomStickerFragment(),
-                            CustomStickerFragment.class.getName(),
-                            0);
+                    mPressed = 1;
+                    customSelectImage();
                     break;
 
                 default:
@@ -166,6 +166,32 @@ public class HomeFragment extends Fragment {
                     Log.d(TAG, "Choose from Library");
                     if(result){}
                     galleryIntent();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void customSelectImage() {
+        final CharSequence[] items = {"Create new from Library", "View Custom Stickers",
+                "Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
+        builder.setTitle("Custom Sticker");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                boolean result= Util.checkPermission(getView().getContext());
+                if (items[item].equals("Create new from Library")) {
+                    Log.d(TAG, "Create new from Library");
+                    if(result){}
+                    galleryIntent();
+                } else if (items[item].equals("View Custom Stickers")) {
+                    MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+                            new StickerListFragment(),
+                            StickerListFragment.class.getName(),
+                            0);
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -202,10 +228,17 @@ public class HomeFragment extends Fragment {
 
                 Log.d(TAG, "from gallery " + image.toString());
 
-                MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
-                        new PreviewFragment(),
-                        PreviewFragment.class.getName(),
-                        0);
+                if(mPressed == 1){
+                    MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+                            new CustomStickerFragment(),
+                            CustomStickerFragment.class.getName(),
+                            0);
+                } else {
+                    MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+                            new PreviewFragment(),
+                            PreviewFragment.class.getName(),
+                            0);
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
