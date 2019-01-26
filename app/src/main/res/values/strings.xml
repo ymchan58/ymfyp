@@ -12,7 +12,7 @@
     <string name="app_desc">photo edit share</string>
     <string name="home_btn_camera">Camera</string>
     <string name="home_btn_folder">Gallery</string>
-    <string name="home_btn_arcam">Face effect Cam</string>
+    <string name="home_btn_arcam">Face Effect Cam</string>
     <string name="home_btn_customsticker">Custom Sticker</string>
 
     <!-- CameraFragment -->
