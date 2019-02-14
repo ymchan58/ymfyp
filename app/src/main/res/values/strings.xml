@@ -53,4 +53,20 @@
     <string name="pop_del_sticker_title">Are you sure you want to delete this sticker?</string>
     <string name="pop_del_sticker_dialog">There is no undo.</string>
 
+    <!-- Place Picker plugin -->
+    <string name="selected_place_info">Selected location information:\n%1$s</string>
+    <string name="go_to_picker_activity">Go to place picker activity</string>
+
+    <!--QueryFeatureActivity activity-->
+    <string name="query_feature_marker_title">Properties:</string>
+    <string name="query_feature_marker_snippet">No feature properties found</string>
+    <string name="query_feature_no_properties_found">No feature properties found</string>
+    <string name="click_on_map_instruction">Tap on the map</string>
+
+    <!--LocationPickerActivity activity-->
+    <string name="location_picker_select_location_button_cancel">Cancel</string>
+    <string name="location_picker_select_location_button_select">Select a location</string>
+    <string name="location_picker_dropped_marker_snippet_no_results">No results</string>
+    <string name="location_picker_place_name_result">Place name: %1$s</string>
+
 </resources>
