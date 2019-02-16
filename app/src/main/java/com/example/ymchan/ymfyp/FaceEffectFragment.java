@@ -16,6 +16,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,7 +28,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.example.ymchan.ymfyp.Camera.CameraSourcePreview;
@@ -79,9 +84,16 @@ public class FaceEffectFragment extends Fragment implements EmojiBSFragment.Emoj
     private EmojiBSFragment mEmojiBSFragment;
     private TextView mEmojiTextView;
 
-    private ImageButton filter1Btn;
+    private ImageView filter1Btn;
     private ImageButton filter2Btn;
-    private ImageButton filter3Btn;
+    private ImageView filter3Btn;
+
+    private ImageView mFlipBtn;
+    private ImageView mCaptureBtn;
+    private ImageView mFxListBtn;
+
+    private Spinner mFxListSpinner;
+    private TextView mFaceFiltertv;
 
     private boolean mIsFilter2Selected = false;
 
@@ -106,17 +118,36 @@ public class FaceEffectFragment extends Fragment implements EmojiBSFragment.Emoj
         mGraphicOverlay = (GraphicOverlay) view.findViewById(R.id.faceOverlay);
 
         //flip button
-        final ImageButton button = (ImageButton) view.findViewById(R.id.flipButton);
-        button.setOnClickListener(mSwitchCameraButtonListener);
+//        final ImageButton button = (ImageButton) view.findViewById(R.id.flipButton);
+//        button.setOnClickListener(mSwitchCameraButtonListener);
+        mFlipBtn = (ImageView) view.findViewById(R.id.flipButton);
+        mFlipBtn.setOnClickListener(mSwitchCameraButtonListener);
 
         //capture button
-        final ImageButton captureButton = (ImageButton) view.findViewById(R.id.capButton);
-        captureButton.setOnClickListener(mCaptureCameraButtonListener);
+//        final ImageView captureButton = (ImageView) view.findViewById(R.id.capButton);
+//        captureButton.setOnClickListener(mCaptureCameraButtonListener);
+        mCaptureBtn = (ImageView) view.findViewById(R.id.capButton);
+        mCaptureBtn.setOnClickListener(mCaptureCameraButtonListener);
+
+        mFxListSpinner = (Spinner) view.findViewById(R.id.fxListSpinner);
+
+        String[] textArray = {"test", "hi"};
+        Integer[] imageArray = {R.drawable.face_fx_default, R.drawable.facefx_lightbulb_on};
+
+//        SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.row_facefilter, textArray, imageArray);
+//        mFxListSpinner.setAdapter(adapter);
+
+        mFaceFiltertv = (TextView) view.findViewById(R.id.faceFiltertv);
+//        mFaceFiltertv.setVisibility(View.VISIBLE);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),
+                R.layout.row_facefilter, R.id.faceFiltertv, textArray);
+        mFxListSpinner.setAdapter(adapter);
 
         //filter selection buttons
-        filter1Btn = (ImageButton) view.findViewById(R.id.filter1);
+        filter1Btn = (ImageView) view.findViewById(R.id.filter1);
 //        filter2Btn = (ImageButton) view.findViewById(R.id.filter2);
-        filter3Btn = (ImageButton) view.findViewById(R.id.filter3);
+        filter3Btn = (ImageView) view.findViewById(R.id.filter3);
 
         mIsFilter2Selected = false;
 
@@ -421,6 +452,16 @@ public class FaceEffectFragment extends Fragment implements EmojiBSFragment.Emoj
                 .setRequestedFps(60.0f)
                 .setAutoFocusEnabled(true)
                 .build();
+
+        setFacingImageBasedOnCamera();
+    }
+
+    private void setFacingImageBasedOnCamera() {
+        if (mIsFrontFacing) {
+            mFlipBtn.setImageResource(R.drawable.ic_facing_back);
+        } else {
+            mFlipBtn.setImageResource(R.drawable.ic_facing_front);
+        }
     }
 
     private void startCameraSource() {

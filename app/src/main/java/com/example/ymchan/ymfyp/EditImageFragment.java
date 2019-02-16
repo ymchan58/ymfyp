@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -61,7 +62,8 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         PropertiesBSFragment.Properties,
         EmojiBSFragment.EmojiListener,
         StickerBSFragment.StickerListener,
-        FramesBSFragment.FramesListener,
+        LocationFragment.LocationListener,
+//        FramesBSFragment.FramesListener,
         FilterListener,
         OnSaveBitmap {
 
@@ -83,6 +85,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     private EmojiBSFragment mEmojiBSFragment;
     private StickerBSFragment mStickerBSFragment;
     private FramesBSFragment mFramesBSFragment;
+    private LocationBSFragment mLocBSFragment;
 
     private ImageView mSelectedFrameImageView;
 
@@ -128,8 +131,11 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         mStickerBSFragment = new StickerBSFragment();
         mStickerBSFragment.setStickerListener(this);
 
-        mFramesBSFragment = new FramesBSFragment();
-        mFramesBSFragment.setFramesListener(this);
+        mLocBSFragment = new LocationBSFragment();
+        mLocBSFragment.setLocationListener(this);
+
+//        mFramesBSFragment = new FramesBSFragment();
+//        mFramesBSFragment.setFramesListener(this);
 
         mSelectedFrameImageView = view.findViewById(R.id.selectedFrameView);
 
@@ -426,6 +432,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
             case CROP:
                 break;
             case ROTATE:
+//                mPhotoEditorView.setRotation(90);
                 break;
             case ADJUST:
                 break;
@@ -459,7 +466,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
                 mStickerBSFragment.show(getFragmentManager(), mStickerBSFragment.getTag());
                 break;
             case LOCATION:
-//                mFramesBSFragment.show(getFragmentManager(), mFramesBSFragment.getTag());
+                mLocBSFragment.show(getFragmentManager(), mLocBSFragment.getTag());
                 break;
         }
     }
@@ -521,14 +528,24 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         mTxtCurrentTool.setText(R.string.label_sticker);
     }
 
-    //Override methods for FramesBSFragment.FramesListener
+//    //Override methods for FramesBSFragment.FramesListener
+//    @Override
+//    public void onFrameClick(Bitmap bitmap) {
+//        ViewGroup.LayoutParams params = mPhotoEditorView.getLayoutParams();
+//        mSelectedFrameImageView.setLayoutParams(params);
+//        mSelectedFrameImageView.setImageBitmap(bitmap);
+////        mPhotoEditor.addImage(bitmap);
+////        mTxtCurrentTool.setText(R.string.label_frames);
+//    }
+
+    //Override method for LocationListener
+
+
     @Override
-    public void onFrameClick(Bitmap bitmap) {
-        ViewGroup.LayoutParams params = mPhotoEditorView.getLayoutParams();
-        mSelectedFrameImageView.setLayoutParams(params);
-        mSelectedFrameImageView.setImageBitmap(bitmap);
-//        mPhotoEditor.addImage(bitmap);
-//        mTxtCurrentTool.setText(R.string.label_frames);
+    public void onLocationSelected(String textLocation) {
+//        String loc = MainActivity.getLocationString();
+        Log.d(TAG, "location = " + textLocation);
+        mPhotoEditor.addText(textLocation, Color.BLACK);
     }
 
     //Override methods for FilterListener

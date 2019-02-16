@@ -172,8 +172,21 @@ public class CustomStickersDatabase {
     }
 
     public boolean deleteEntry(int l) throws SQLException {
+        Log.d(TAG, "deleteEntry sticker = " + l);
         return myDatabase.delete(DATABASE_TABLE, KEY_ID + "=" + l, null) > 0;
 
+    }
+
+    public Cursor getAllItems() {
+        return myDatabase.query(
+                DATABASE_TABLE,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
 

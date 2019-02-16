@@ -5,13 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,10 +57,9 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 
 /**
- * Created by yan min on 14/2/2019
- * Not used. keep as backup.
+ * Created by yan min on 16/2/2019
  */
-public class LocationFragment extends Fragment implements PermissionsListener, OnMapReadyCallback{
+public class LocationBSFragment extends BottomSheetDialogFragment implements PermissionsListener, OnMapReadyCallback {
 
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final String TAG = "ymfyp.LocationFragment";
@@ -85,21 +82,32 @@ public class LocationFragment extends Fragment implements PermissionsListener, O
     private TextView mSelectedLocationTextView;
     private Button mConfirmLocationBtn;
 
-    private LocationListener mLocationListener;
+    private LocationFragment.LocationListener mLocationListener;
 
-    public LocationFragment() {
+    public LocationBSFragment() {
         // Required empty public constructor
     }
 
-    public static LocationFragment show(@NonNull FragmentActivity fragActivity) {
-        return show(fragActivity);
-    }
+    private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
+
+        @Override
+        public void onStateChanged(@NonNull View bottomSheet, int newState) {
+            if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                dismiss();
+            }
+
+        }
+
+        @Override
+        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+        }
+    };
 
     public interface LocationListener {
         void onLocationSelected(String textLocation);
     }
 
-    public void setLocationListener(LocationListener locationListener) {
+    public void setLocationListener(LocationFragment.LocationListener locationListener) {
         mLocationListener = locationListener;
     }
 
@@ -146,7 +154,8 @@ public class LocationFragment extends Fragment implements PermissionsListener, O
 //                    Log.d(TAG, "inputText = " + inputText);
                     mLocationListener.onLocationSelected(inputText);
                 }
-                getActivity().onBackPressed();
+//                getActivity().onBackPressed();
+                dismiss();
             }
         });
     }
@@ -449,21 +458,22 @@ public class LocationFragment extends Fragment implements PermissionsListener, O
 
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof LocationListener) {
-            mLocationListener = (LocationListener) context;
-        } else {
-            throw new ClassCastException(context.toString()
-                    + " must implement");
-        }
-    }
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        if (context instanceof LocationFragment.LocationListener) {
+//            mLocationListener = (LocationFragment.LocationListener) context;
+//        } else {
+//            throw new ClassCastException(context.toString()
+//                    + " must implement");
+//        }
+//    }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mLocationListener = null;
+//        mLocationListener = null;
     }
+
 
 }
