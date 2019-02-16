@@ -1,4 +1,4 @@
-package com.example.ymchan.ymfyp.Util;
+package com.example.ymchan.ymfyp.Adapters;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ymchan.ymfyp.R;
+import com.example.ymchan.ymfyp.Util.FilterListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,29 +90,12 @@ public class FilterViewAdapter extends RecyclerView.Adapter<FilterViewAdapter.Vi
     }
 
     private void setupFilters() {
+        //default filters from PhotoEditor EffectFactory
         mPairList.add(new Pair<>("filters/original.jpg", PhotoFilter.NONE));
-//        mPairList.add(new Pair<>("filters/auto_fix.png", PhotoFilter.AUTO_FIX));
-//        mPairList.add(new Pair<>("filters/brightness.png", PhotoFilter.BRIGHTNESS));
-//        mPairList.add(new Pair<>("filters/contrast.png", PhotoFilter.CONTRAST));
-        mPairList.add(new Pair<>("filters/documentary.png", PhotoFilter.DOCUMENTARY));
-        mPairList.add(new Pair<>("filters/dual_tone.png", PhotoFilter.DUE_TONE));
-        mPairList.add(new Pair<>("filters/fill_light.png", PhotoFilter.FILL_LIGHT));
-        mPairList.add(new Pair<>("filters/fish_eye.png", PhotoFilter.FISH_EYE));
-        mPairList.add(new Pair<>("filters/grain.png", PhotoFilter.GRAIN));
         mPairList.add(new Pair<>("filters/gray_scale.png", PhotoFilter.GRAY_SCALE));
-        mPairList.add(new Pair<>("filters/lomish.png", PhotoFilter.LOMISH));
         mPairList.add(new Pair<>("filters/negative.png", PhotoFilter.NEGATIVE));
         mPairList.add(new Pair<>("filters/posterize.png", PhotoFilter.POSTERIZE));
-        mPairList.add(new Pair<>("filters/saturate.png", PhotoFilter.SATURATE));
         mPairList.add(new Pair<>("filters/sepia.png", PhotoFilter.SEPIA));
-        mPairList.add(new Pair<>("filters/sharpen.png", PhotoFilter.SHARPEN));
-        mPairList.add(new Pair<>("filters/temprature.png", PhotoFilter.TEMPERATURE));
-        mPairList.add(new Pair<>("filters/tint.png", PhotoFilter.TINT));
-        mPairList.add(new Pair<>("filters/vignette.png", PhotoFilter.VIGNETTE));
         mPairList.add(new Pair<>("filters/cross_process.png", PhotoFilter.CROSS_PROCESS));
-        mPairList.add(new Pair<>("filters/b_n_w.png", PhotoFilter.BLACK_WHITE));
-//        mPairList.add(new Pair<>("filters/flip_horizental.png", PhotoFilter.FLIP_HORIZONTAL));
-//        mPairList.add(new Pair<>("filters/flip_vertical.png", PhotoFilter.FLIP_VERTICAL));
-//        mPairList.add(new Pair<>("filters/rotate.png", PhotoFilter.ROTATE));
     }
 }

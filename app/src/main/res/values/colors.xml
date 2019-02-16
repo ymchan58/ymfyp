@@ -5,6 +5,9 @@
     <color name="colorPrimaryReallyDark">#131B1F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <!--photoES colours-->
+    <color name="themeDarkBlue">#1c2635</color>
+
     <!--photoeditor-->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
@@ -26,4 +29,9 @@
     <color name="iris">#8B4513</color>
     <color name="eyeOutline">#000000</color>
     <color name="overlayHint">#7FFF00</color>
+
+    <!-- RecyclerSwipe colours -->
+    <color name="bg_row_background">#fa315b</color>
+    <color name="item_name">#535353</color>
+    <color name="description">#a9a9a9</color>
 </resources>

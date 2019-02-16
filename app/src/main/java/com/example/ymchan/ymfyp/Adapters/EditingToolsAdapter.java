@@ -1,11 +1,10 @@
-package com.example.ymchan.ymfyp.Util;
+package com.example.ymchan.ymfyp.Adapters;
 
 /**
  * Created by yan min on 4/7/2018
  */
 
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ymchan.ymfyp.R;
+import com.example.ymchan.ymfyp.Util.ToolType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +30,10 @@ public class EditingToolsAdapter extends RecyclerView.Adapter<EditingToolsAdapte
 
     public EditingToolsAdapter(OnItemSelected onItemSelected) {
         mOnItemSelected = onItemSelected;
-        //added by ym 21/8/2018 to implement ucrop in:
-//        mToolList.add(new ToolModel("Crop", R.drawable.ic_brush, ToolType.CROP));
-//        mToolList.add(new ToolModel("Rotate", R.drawable.ic_brush, ToolType.ROTATE));
-//        mToolList.add(new ToolModel("Brightness", R.drawable.ic_brush, ToolType.BRIGHTNESS));
-//        mToolList.add(new ToolModel("Constrast", R.drawable.ic_brush, ToolType.CONTRAST));
+        //added by ym 31/1/2019 to implement ucrop in:
+        mToolList.add(new ToolModel("Crop", R.drawable.ic_iconfinder_edit_crop_3671687, ToolType.CROP));
+        mToolList.add(new ToolModel("Rotate", R.drawable.ic_iconfinder_rotate_left_1608422, ToolType.ROTATE));
+        mToolList.add(new ToolModel("Adjust", R.drawable.ic_iconfinder_sun_symbol_110801, ToolType.ADJUST));
 
         //default tools:
         mToolList.add(new ToolModel("Brush", R.drawable.ic_brush, ToolType.BRUSH));
@@ -44,8 +43,8 @@ public class EditingToolsAdapter extends RecyclerView.Adapter<EditingToolsAdapte
         mToolList.add(new ToolModel("Emoji", R.drawable.ic_insert_emoticon, ToolType.EMOJI));
         mToolList.add(new ToolModel("Sticker", R.drawable.ic_sticker, ToolType.STICKER));
 
-        //added by ym 16/12/2018 to implement frames:
-//        mToolList.add(new ToolModel("Frames", R.drawable.ic_sticker, ToolType.FRAMES));
+        //added by ym 31/1/2019 to implement location sticker in:
+        mToolList.add(new ToolModel("Location", R.drawable.ic_iconfinder_icon_location_2867917, ToolType.LOCATION));
     }
 
 //    public EditingToolsAdapter() {

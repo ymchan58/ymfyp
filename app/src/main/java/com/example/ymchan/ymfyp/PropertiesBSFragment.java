@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
-import com.example.ymchan.ymfyp.Util.ColorPickerAdapter;
+import com.example.ymchan.ymfyp.Adapters.ColorPickerAdapter;
 
 /**
  * Created by yan min on 15/8/2018

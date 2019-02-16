@@ -5,12 +5,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -34,19 +32,16 @@ import android.view.ViewGroup;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ymchan.ymfyp.Image.ResultHolder;
 import com.example.ymchan.ymfyp.Util.CustomStickersDatabase;
-import com.example.ymchan.ymfyp.Util.EditingToolsAdapter;
+import com.example.ymchan.ymfyp.Adapters.EditingToolsAdapter;
 import com.example.ymchan.ymfyp.Util.FilterListener;
-import com.example.ymchan.ymfyp.Util.FilterViewAdapter;
+import com.example.ymchan.ymfyp.Adapters.FilterViewAdapter;
 import com.example.ymchan.ymfyp.Util.ToolType;
-import com.example.ymchan.ymfyp.Util.Util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
@@ -428,6 +423,12 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     @Override
     public void onToolSelected(ToolType toolType) {
         switch (toolType) {
+            case CROP:
+                break;
+            case ROTATE:
+                break;
+            case ADJUST:
+                break;
             case BRUSH:
                 mPhotoEditor.setBrushDrawingMode(true);
                 mTxtCurrentTool.setText(R.string.label_brush);
@@ -457,8 +458,8 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
             case STICKER:
                 mStickerBSFragment.show(getFragmentManager(), mStickerBSFragment.getTag());
                 break;
-            case FRAMES:
-                mFramesBSFragment.show(getFragmentManager(), mFramesBSFragment.getTag());
+            case LOCATION:
+//                mFramesBSFragment.show(getFragmentManager(), mFramesBSFragment.getTag());
                 break;
         }
     }

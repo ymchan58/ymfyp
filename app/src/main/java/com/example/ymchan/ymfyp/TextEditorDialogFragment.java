@@ -21,7 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.ymchan.ymfyp.Util.ColorPickerAdapter;
+import com.example.ymchan.ymfyp.Adapters.ColorPickerAdapter;
 
 /**
  * Created by yan min on 5/10/2018

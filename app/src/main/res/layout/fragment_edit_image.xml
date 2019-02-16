@@ -5,7 +5,7 @@
     android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="@drawable/background_colour_home"
     tools:context=".EditImageFragment"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -20,7 +20,6 @@
         android:id="@+id/selectedFrameView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@drawable/ic_sticker"
         app:layout_constraintBottom_toTopOf="@+id/rvConstraintTools"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -72,7 +71,6 @@
         android:id="@+id/rvConstraintTools"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/tool_bg"
         android:orientation="horizontal"
         android:paddingBottom="4dp"
         android:paddingTop="4dp"

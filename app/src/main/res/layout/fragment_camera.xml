@@ -9,7 +9,7 @@
         android:id="@+id/contentFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryReallyDark">
+        android:background="@drawable/background_colour_home">
 
         <FrameLayout
             android:id="@+id/cam_frame"
@@ -37,14 +37,12 @@
             android:id="@+id/blackCover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/black"
             android:visibility="gone" />
 
         <com.example.ymchan.ymfyp.Camera.CameraControls xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="130dp"
             android:layout_gravity="bottom"
-            android:background="@color/colorPrimaryDark"
             android:elevation="7dp"
             app:camera="@+id/camera"
             app:cover="@+id/blackCover" />

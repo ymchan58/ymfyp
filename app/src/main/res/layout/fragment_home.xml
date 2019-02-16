@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeFragment"
-    android:background="@drawable/background_colour_home">
+    android:background="@drawable/home_bg">
 
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="60dp"
         android:text="@string/app_display_name"
         android:textSize="30sp"
         android:textStyle="italic"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="100dp"
         android:text="@string/app_desc"
         android:textStyle="italic"
         android:textColor="@color/white"/>
@@ -42,7 +42,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="170dp"
+        android:layout_marginTop="160dp"
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
@@ -55,6 +55,8 @@
                 android:id="@+id/camera_icn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:orientation="vertical">
 
                 <ImageView
@@ -62,7 +64,7 @@
                     android:layout_height="70dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/ic_if_camera_1891018" />
+                    android:src="@drawable/ic_iconfinder_camera_226593" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -77,6 +79,8 @@
                 android:id="@+id/folder_icn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:orientation="vertical">
 
                 <ImageView
@@ -85,7 +89,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:adjustViewBounds="false"
-                    android:src="@drawable/ic_if_folder_1891015" />
+                    android:src="@drawable/ic_folder_icon" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -108,6 +112,8 @@
                 android:id="@+id/arcamera_icn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:orientation="vertical">
 
                 <ImageView
@@ -115,7 +121,7 @@
                     android:layout_height="70dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/ic_iconfinder_imoticon_2_210816" />
+                    android:src="@drawable/ic_smile_icon" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -130,6 +136,8 @@
                 android:id="@+id/customsticker_icn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:orientation="vertical">
 
                 <ImageView
@@ -137,7 +145,7 @@
                     android:layout_height="70dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/ic_iconfinder_imoticon_2_210816" />
+                    android:src="@drawable/ic_draw_icon" />
 
                 <TextView
                     android:layout_width="match_parent"

@@ -2,14 +2,11 @@ package com.example.ymchan.ymfyp;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,10 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ymchan.ymfyp.Image.StickerModel;
-import com.example.ymchan.ymfyp.Util.CustomStickerAdapter;
+import com.example.ymchan.ymfyp.Adapters.CustomStickerAdapter;
 import com.example.ymchan.ymfyp.Util.CustomStickersDatabase;
-
-import java.util.List;
 
 
 /**
