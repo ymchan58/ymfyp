@@ -36,4 +36,5 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:7.0.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v7:0.7.0'
+    compile project(':photoeditor')
 }

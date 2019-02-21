@@ -388,10 +388,10 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
     }
 
     private void drawEmoji(Canvas canvas, PointF facePosition, float faceWidth, PointF mouthBottomPosition, PointF noseBasePosition) {
-        final float NOSE_FACE_WIDTH_RATIO = (float)(1 / 5.0);
+        final float NOSE_FACE_WIDTH_RATIO = (float)(1 / 4.0);
         float noseWidth = faceWidth * NOSE_FACE_WIDTH_RATIO;
-        int left = (int)(noseBasePosition.x - (faceWidth / 1.7));
-        int right = (int)(noseBasePosition.x + (faceWidth / 1.7));
+        int left = (int)(noseBasePosition.x - (faceWidth / 1.2));
+        int right = (int)(noseBasePosition.x + (faceWidth / 1.2));
         int top = (int)(facePosition.y * 1.05);
         int bottom = (int)(mouthBottomPosition.y * 1.2);
 

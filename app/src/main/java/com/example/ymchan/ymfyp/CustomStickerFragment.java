@@ -6,14 +6,21 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.ymchan.ymfyp.Image.ResultHolder;
@@ -30,8 +37,10 @@ public class CustomStickerFragment extends Fragment {
 
     private final static String TAG = "ymfyp.CustomStickerFrag";
 
-    private Button btnReset;
-    private Button btnSave;
+    private LinearLayout btnReset;
+    private LinearLayout btnScratchSize;
+    private ImageView btnSave;
+    private ImageView btnClose;
 
     byte[] jpeg = null;
     Bitmap capturedImageBitmap = null;
@@ -39,6 +48,9 @@ public class CustomStickerFragment extends Fragment {
     private static CustomStickersDatabase mCustomStickerDB = null;
 
     private WScratchView mWScratchView;
+    private SeekBar mScratchSizeBar;
+    private Animation bottomUp;
+    private Animation bottomDown;
 
     public CustomStickerFragment() {
         // Required empty public constructor
@@ -63,8 +75,16 @@ public class CustomStickerFragment extends Fragment {
 
         //initialise views
         btnReset = view.findViewById(R.id.reset_scratch);
+        btnScratchSize = view.findViewById(R.id.set_scratch_size);
         btnSave = view.findViewById(R.id.save_scratch);
+        btnClose = view.findViewById(R.id.close_scratch);
         mWScratchView = (WScratchView) view.findViewById(R.id.scratch_view);
+        mScratchSizeBar = view.findViewById(R.id.scratch_size_slider);
+
+        bottomUp = AnimationUtils.loadAnimation(getContext(),
+                R.anim.bottom_up);
+        bottomDown = AnimationUtils.loadAnimation(getContext(),
+                R.anim.bottom_down);
 
         return view;
     }
@@ -92,6 +112,32 @@ public class CustomStickerFragment extends Fragment {
         //add listener for buttons
         addListener();
 
+        //listener for seekbar
+        mScratchSizeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progress = 30;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                Log.d(TAG, "onProgressChanged progress value = " + progressValue);
+                progress = progressValue;
+                int revealSize = Math.round(progressValue*(getResources().getDisplayMetrics().xdpi/ DisplayMetrics.DENSITY_DEFAULT));
+                mWScratchView.setRevealSize(revealSize);
+//                Toast.makeText(getApplicationContext(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "onStartTrackingTouch");
+//                Toast.makeText(getApplicationContext(), "Started tracking seekbar", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "onStopTrackingTouch");
+//                textView.setText("Covered: " + progress + "/" + seekBar.getMax());
+//                Toast.makeText(getApplicationContext(), "Stopped tracking seekbar", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -106,7 +152,9 @@ public class CustomStickerFragment extends Fragment {
 
     public void addListener() {
         btnReset.setOnClickListener(mOnclickListener);
+        btnScratchSize.setOnClickListener(mOnclickListener);
         btnSave.setOnClickListener(mOnclickListener);
+        btnClose.setOnClickListener(mOnclickListener);
     }
 
     public View.OnClickListener mOnclickListener = new View.OnClickListener() {
@@ -117,6 +165,17 @@ public class CustomStickerFragment extends Fragment {
                     Log.d(TAG, "reset_scratch pressed ");
                     mWScratchView.resetView();
                     mWScratchView.setScratchAll(false);
+                    break;
+
+                case R.id.set_scratch_size:
+                    Log.d(TAG, "set_scratch_size pressed ");
+                    if(mScratchSizeBar.getVisibility() == View.INVISIBLE){
+                        mScratchSizeBar.startAnimation(bottomUp);
+                        mScratchSizeBar.setVisibility(View.VISIBLE);
+                    } else {
+                        mScratchSizeBar.startAnimation(bottomDown);
+                        mScratchSizeBar.setVisibility(View.INVISIBLE);
+                    }
                     break;
 
                 case R.id.save_scratch:
@@ -150,6 +209,11 @@ public class CustomStickerFragment extends Fragment {
                             0);
 
                     mCustomStickerDB.close();
+                    break;
+
+                case R.id.close_scratch:
+                    Log.d(TAG, "close_scratch pressed");
+                    getActivity().getSupportFragmentManager().popBackStackImmediate();
                     break;
 
                 default:

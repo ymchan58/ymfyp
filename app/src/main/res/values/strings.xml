@@ -50,6 +50,10 @@
     <!-- Scratch Custom Sticker-->
     <string name="scratch_btn_reset">Reset</string>
     <string name="scratch_btn_save">Save</string>
+    <string name="scratch_btn_erase">Erase</string>
+    <string name="scratch_size_set">Size</string>
+    <string name="scratch_btn_filter">Filter</string>
+    <string name="scratch_editor">Custom Sticker Editor</string>
 
     <!-- StickerListFragment -->
     <string name="pop_del_sticker_title">Are you sure you want to delete this sticker?</string>

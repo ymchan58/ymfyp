@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.effect.EffectFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,11 +41,13 @@ import com.example.ymchan.ymfyp.Adapters.EditingToolsAdapter;
 import com.example.ymchan.ymfyp.Util.FilterListener;
 import com.example.ymchan.ymfyp.Adapters.FilterViewAdapter;
 import com.example.ymchan.ymfyp.Util.ToolType;
+import com.example.ymchan.ymfyp.Util.Util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import ja.burhanrashid52.photoeditor.CustomEffect;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
@@ -59,6 +62,7 @@ import ja.burhanrashid52.photoeditor.ViewType;
 
 public class EditImageFragment extends Fragment implements OnPhotoEditorListener,
         EditingToolsAdapter.OnItemSelected,
+        AdjustBSFragment.Adjustments,
         PropertiesBSFragment.Properties,
         EmojiBSFragment.EmojiListener,
         StickerBSFragment.StickerListener,
@@ -81,6 +85,9 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     private static final int PICK_REQUEST = 53;
     public static final int READ_WRITE_STORAGE = 52;
 
+    private int mRotateValue = 0;
+
+    private AdjustBSFragment mAdjustBSFragment;
     private PropertiesBSFragment mPropertiesBSFragment;
     private EmojiBSFragment mEmojiBSFragment;
     private StickerBSFragment mStickerBSFragment;
@@ -121,6 +128,9 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
 //        mPhotoEditorView.getSource().setImageResource(R.drawable.got);
 
         initViews(view);
+
+        mAdjustBSFragment = new AdjustBSFragment();
+        mAdjustBSFragment.setAdjustmentsChangeListener(this);
 
         mPropertiesBSFragment = new PropertiesBSFragment();
         mPropertiesBSFragment.setPropertiesChangeListener(this);
@@ -322,18 +332,20 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             Log.d(TAG, "Saving image");
             showLoading("Saving...");
-            File file = new File(Environment.getExternalStorageDirectory()
-                    + File.separator + ""
-                    + System.currentTimeMillis() + ".png");
+//            File file = new File(Environment.getExternalStorageDirectory()
+//                    + File.separator + ""
+//                    + System.currentTimeMillis() + ".png");
+            File cacheFile = Util.makeTempFile(getView().getContext(), ".jpg");
+
             try {
-                file.createNewFile();
+                cacheFile.createNewFile();
 
                 SaveSettings saveSettings = new SaveSettings.Builder()
                         .setClearViewsEnabled(true)
                         .setTransparencyEnabled(true)
                         .build();
 
-                mPhotoEditor.saveAsFile(file.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
+                mPhotoEditor.saveAsFile(cacheFile.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
                     @Override
                     public void onSuccess(@NonNull String imagePath) {
                         Log.d(TAG, "Image Saved Successfully");
@@ -432,9 +444,22 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
             case CROP:
                 break;
             case ROTATE:
-//                mPhotoEditorView.setRotation(90);
+                if(mRotateValue == 0) {
+                    mRotateValue = 90;
+                } else if (mRotateValue == 90) {
+                    mRotateValue = 180;
+                } else if (mRotateValue == 180) {
+                    mRotateValue = 270;
+                } else {
+                    mRotateValue = 0;
+                }
+                CustomEffect customEffect = new CustomEffect.Builder(EffectFactory.EFFECT_ROTATE)
+                        .setParameter("angle", mRotateValue)
+                        .build();
+                mPhotoEditor.setFilterEffect(customEffect);
                 break;
             case ADJUST:
+                mAdjustBSFragment.show(getFragmentManager(), mAdjustBSFragment.getTag());
                 break;
             case BRUSH:
                 mPhotoEditor.setBrushDrawingMode(true);
@@ -495,6 +520,25 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         mConstraintSet.applyTo(mRootView);
     }
 
+    //Override methods for AdjustBSFragment.Adjustments
+
+
+    @Override
+    public void onBrightnessChanged(int brightness) {
+        CustomEffect customEffect = new CustomEffect.Builder(EffectFactory.EFFECT_BRIGHTNESS)
+                .setParameter("brightness", ((float)brightness/50))
+                .build();
+        mPhotoEditor.setFilterEffect(customEffect);
+    }
+
+    @Override
+    public void onContrastChanged(int contrast) {
+        CustomEffect customEffect = new CustomEffect.Builder(EffectFactory.EFFECT_CONTRAST)
+                .setParameter("contrast", (float)((float)contrast/50))
+                .build();
+        mPhotoEditor.setFilterEffect(customEffect);
+    }
+
     //Override methods for PropertiesBSFragment.Properties
     @Override
     public void onColorChanged(int colorCode) {
@@ -545,7 +589,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     public void onLocationSelected(String textLocation) {
 //        String loc = MainActivity.getLocationString();
         Log.d(TAG, "location = " + textLocation);
-        mPhotoEditor.addText(textLocation, Color.BLACK);
+        mPhotoEditor.addText("\uD83D\uDCCD " + textLocation, Color.BLACK);
     }
 
     //Override methods for FilterListener

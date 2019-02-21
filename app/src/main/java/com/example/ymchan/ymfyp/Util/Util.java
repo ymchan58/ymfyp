@@ -44,7 +44,7 @@ public class Util {
         File parent =
                 new File(Environment.getExternalStorageDirectory(), mContext.getString(R.string.app_name));
         parent.mkdirs();
-        return new File(parent, "ymfyp_" + timeStamp + extension);
+        return new File(parent, "photoES_" + timeStamp + extension);
     }
 
     public static void closeQuietely(Closeable c) {

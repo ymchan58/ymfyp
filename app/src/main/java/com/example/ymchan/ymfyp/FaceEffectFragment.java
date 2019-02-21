@@ -28,7 +28,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -49,6 +52,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.google.android.gms.vision.Detector;
+import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
@@ -92,8 +96,10 @@ public class FaceEffectFragment extends Fragment implements EmojiBSFragment.Emoj
     private ImageView mCaptureBtn;
     private ImageView mFxListBtn;
 
-    private Spinner mFxListSpinner;
+    private FrameLayout mFilterBox;
     private TextView mFaceFiltertv;
+    private Animation bottomUp;
+    private Animation bottomDown;
 
     private boolean mIsFilter2Selected = false;
 
@@ -129,20 +135,17 @@ public class FaceEffectFragment extends Fragment implements EmojiBSFragment.Emoj
         mCaptureBtn = (ImageView) view.findViewById(R.id.capButton);
         mCaptureBtn.setOnClickListener(mCaptureCameraButtonListener);
 
-        mFxListSpinner = (Spinner) view.findViewById(R.id.fxListSpinner);
+        mFxListBtn = (ImageView) view.findViewById(R.id.fxListButton);
+        mFxListBtn.setOnClickListener(mFxListBtnListener);
+        mFilterBox = (FrameLayout) view.findViewById(R.id.filterBox);
 
-        String[] textArray = {"test", "hi"};
-        Integer[] imageArray = {R.drawable.face_fx_default, R.drawable.facefx_lightbulb_on};
-
-//        SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.row_facefilter, textArray, imageArray);
-//        mFxListSpinner.setAdapter(adapter);
+        bottomUp = AnimationUtils.loadAnimation(getContext(),
+                R.anim.bottom_up);
+        bottomDown = AnimationUtils.loadAnimation(getContext(),
+                R.anim.bottom_down);
 
         mFaceFiltertv = (TextView) view.findViewById(R.id.faceFiltertv);
 //        mFaceFiltertv.setVisibility(View.VISIBLE);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),
-                R.layout.row_facefilter, R.id.faceFiltertv, textArray);
-        mFxListSpinner.setAdapter(adapter);
 
         //filter selection buttons
         filter1Btn = (ImageView) view.findViewById(R.id.filter1);
@@ -209,6 +212,20 @@ public class FaceEffectFragment extends Fragment implements EmojiBSFragment.Emoj
             Log.d(TAG, "capturebutton clicked.");
             mCameraSource.takePicture(null, mPicture);
             showLoading("Capturing...");
+        }
+    };
+
+    private View.OnClickListener mFxListBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "fxlist button clicked.");
+            if(mFilterBox.getVisibility() == View.INVISIBLE){
+                mFilterBox.startAnimation(bottomUp);
+                mFilterBox.setVisibility(View.VISIBLE);
+            } else {
+                mFilterBox.startAnimation(bottomDown);
+                mFilterBox.setVisibility(View.INVISIBLE);
+            }
         }
     };
 

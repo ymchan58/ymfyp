@@ -201,7 +201,7 @@ public class PreviewFragment extends Fragment {
                     String path = MediaStore.Images.Media.insertImage(getView().getContext().getContentResolver(), capturedImageBitmap , "Title", null);
                     Uri uri = Uri.parse(path);
                     shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out my photo from #ymfyp! Free photo editing app | Available on Android ");
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out my photo from #photoES! Free photo editing app | Available on Android ");
                     shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Attached image");
                     startActivity(Intent.createChooser(shareIntent, "Send your image"));
 
