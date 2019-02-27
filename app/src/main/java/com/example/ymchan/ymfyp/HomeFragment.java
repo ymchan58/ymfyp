@@ -189,8 +189,8 @@ public class HomeFragment extends Fragment {
                     galleryIntent();
                 } else if (items[item].equals("View Custom Stickers")) {
                     MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
-                            new StickerListSwipeFragment(),
-                            StickerListSwipeFragment.class.getName(),
+                            new StickerListFragment(),
+                            StickerListFragment.class.getName(),
                             0);
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();

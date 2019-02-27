@@ -4,10 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".StickerListFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/background_colour_home">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/sticker_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:clipToPadding="false"
+        android:overScrollMode="never" />
 </LinearLayout>
