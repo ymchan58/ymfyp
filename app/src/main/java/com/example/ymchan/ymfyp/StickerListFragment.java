@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.ymchan.ymfyp.Adapters.StickerDataAdapter;
 import com.example.ymchan.ymfyp.Image.StickerModel;
@@ -31,6 +32,7 @@ import java.util.List;
 
 /**
  * Created by yan min on 11/1/2019.
+ * Tutorial: https://codeburst.io/android-swipe-menu-with-recyclerview-8f28a235ff28
  *
  */
 public class StickerListFragment extends Fragment{
@@ -39,6 +41,7 @@ public class StickerListFragment extends Fragment{
     private static CustomStickersDatabase mCustomStickerDB = null;
 
     private RecyclerView mRvStickers;
+    private LinearLayout mBackHomeBtn;
 //    private CustomStickerAdapter mCustomStickerAdapter = null;
     private StickerDataAdapter mStickerDataAdapter = null;
     SwipeController swipeController = null;
@@ -70,6 +73,8 @@ public class StickerListFragment extends Fragment{
 
         //initialise views
         mRvStickers = view.findViewById(R.id.sticker_recycler_view);
+        mBackHomeBtn = view.findViewById(R.id.backHome_btn);
+        mBackHomeBtn.setOnClickListener(mBackHomeBtnListener);
 
         return view;
     }
@@ -108,11 +113,15 @@ public class StickerListFragment extends Fragment{
         mStickerModelList = new ArrayList<>();
         List<Bitmap> bitmapStickerList = new ArrayList<>();
         List<Integer> stickerIDList = new ArrayList<>();
+        List<String> stickerNameList = new ArrayList<>();
+        List<String> stickerDateList = new ArrayList<>();
 
         mCustomStickerDB = new CustomStickersDatabase(getContext());
         mCustomStickerDB.open();
         List<byte[]> stickersFromDB = mCustomStickerDB.getAllBitmap();
         stickerIDList = mCustomStickerDB.getAllID();
+        stickerNameList = mCustomStickerDB.getAllName();
+        stickerDateList = mCustomStickerDB.getAllDate();
 
 
         //add stickers from db
@@ -123,7 +132,7 @@ public class StickerListFragment extends Fragment{
         }
 
         for (int i=0; i < stickersFromDB.size(); i++) {
-            StickerModel currentSticker = new StickerModel(bitmapStickerList.get(i), stickerIDList.get(i));
+            StickerModel currentSticker = new StickerModel(bitmapStickerList.get(i), stickerIDList.get(i), stickerNameList.get(i),stickerDateList.get(i) );
             mStickerModelList.add(currentSticker);
         }
 
@@ -174,6 +183,17 @@ public class StickerListFragment extends Fragment{
 //        mSelectedStickerID = sticker.getmStickerID();
 //        popAlertDialog();
 //    }
+
+    private View.OnClickListener mBackHomeBtnListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+            MainActivity.openFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+                    new HomeFragment(),
+                    HomeFragment.class.getName(),
+                    0);
+
+        }
+    };
 
     public void popAlertDialog(int position){
         Log.d(TAG, "popAlertDialog");

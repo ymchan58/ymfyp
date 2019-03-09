@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 /**
+ *  NOT USED!!!!!!!!!!!
+ *
  * Created by yan min on 16/12/2018
  * FramesBSFragment is fragment for stickers.
  * referenced from PhotoEditor test app. StickerBSFragment

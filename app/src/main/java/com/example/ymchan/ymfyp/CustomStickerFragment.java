@@ -1,5 +1,7 @@
 package com.example.ymchan.ymfyp;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,7 +9,9 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
@@ -18,8 +22,10 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -29,6 +35,9 @@ import com.example.ymchan.ymfyp.Util.WScratchView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by yan min on 29/12/2018
@@ -51,6 +60,9 @@ public class CustomStickerFragment extends Fragment {
     private SeekBar mScratchSizeBar;
     private Animation bottomUp;
     private Animation bottomDown;
+
+    private RelativeLayout mProgressCircle;
+    private SaveCustomStickerAsyncTask mSaveCustomStickerAsyncTask = null;
 
     public CustomStickerFragment() {
         // Required empty public constructor
@@ -80,6 +92,7 @@ public class CustomStickerFragment extends Fragment {
         btnClose = view.findViewById(R.id.close_scratch);
         mWScratchView = (WScratchView) view.findViewById(R.id.scratch_view);
         mScratchSizeBar = view.findViewById(R.id.scratch_size_slider);
+        mProgressCircle = view.findViewById(R.id.loadingPanel);
 
         bottomUp = AnimationUtils.loadAnimation(getContext(),
                 R.anim.bottom_up);
@@ -180,35 +193,41 @@ public class CustomStickerFragment extends Fragment {
 
                 case R.id.save_scratch:
                     Log.d(TAG, "save_scratch pressed");
-                    // Obtain bitmap from mWScratchView
-                    Bitmap result = loadBitmapFromView(mWScratchView, mWScratchView.getWidth(), mWScratchView.getHeight());
-                    Log.d(TAG , "result = " + result);
+                    mSaveCustomStickerAsyncTask = new SaveCustomStickerAsyncTask();
+                    mSaveCustomStickerAsyncTask.execute();
+//                    // Obtain bitmap from mWScratchView
+//                    Bitmap result = loadBitmapFromView(mWScratchView, mWScratchView.getWidth(), mWScratchView.getHeight());
+//                    Log.d(TAG , "result = " + result);
+//
+//                    long captureStartTime = System.currentTimeMillis();
+//                    Date captureDate = Calendar.getInstance().getTime();
+//                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//                    String createDate = dateFormat.format(captureDate);
+//
+//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                    result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                    byte[] jpeg = stream.toByteArray();
+//                    result.recycle();
+//
+//                    long callbackTime = System.currentTimeMillis();
+//                    ResultHolder.dispose();
+//                    ResultHolder.setImage(jpeg);
+//                    ResultHolder.setTimeToCallback(callbackTime - captureStartTime);
+//
+//                    mCustomStickerDB = new CustomStickersDatabase(getContext());
+//                    mCustomStickerDB.open();
+//                    mCustomStickerDB.addBitmap(result.toString(),createDate,jpeg);
 
-                    long captureStartTime = System.currentTimeMillis();
-
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    result.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] jpeg = stream.toByteArray();
-                    result.recycle();
-
-                    long callbackTime = System.currentTimeMillis();
-                    ResultHolder.dispose();
-                    ResultHolder.setImage(jpeg);
-                    ResultHolder.setTimeToCallback(callbackTime - captureStartTime);
-
-                    mCustomStickerDB = new CustomStickersDatabase(getContext());
-                    mCustomStickerDB.open();
-                    mCustomStickerDB.addBitmap(result.toString(), jpeg);
 //                    Log.d(TAG, "result = " + result);
 //                    Log.d(TAG, "jpeg = " + jpeg);
 //                    Log.d(TAG, "")
 
-                    MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
-                            new PreviewFragment(),
-                            PreviewFragment.class.getName(),
-                            0);
-
-                    mCustomStickerDB.close();
+//                    MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+//                            new PreviewFragment(),
+//                            PreviewFragment.class.getName(),
+//                            0);
+//
+//                    mCustomStickerDB.close();
                     break;
 
                 case R.id.close_scratch:
@@ -229,6 +248,79 @@ public class CustomStickerFragment extends Fragment {
         v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
         v.draw(c);
         return b;
+    }
+
+    // asynctask
+    private class SaveCustomStickerAsyncTask extends AsyncTask<Integer, Integer, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            Log.v(TAG, "[onPreExecute]");
+
+            // show progress
+            mProgressCircle.setVisibility(View.VISIBLE);
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... mode) {
+            Log.v(TAG, "[doInBackground]");
+            try {
+                // Obtain bitmap from mWScratchView
+                Bitmap result = loadBitmapFromView(mWScratchView, mWScratchView.getWidth(), mWScratchView.getHeight());
+                Log.d(TAG , "result = " + result);
+
+                long captureStartTime = System.currentTimeMillis();
+                Date captureDate = Calendar.getInstance().getTime();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String createDate = dateFormat.format(captureDate);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] jpeg = stream.toByteArray();
+                result.recycle();
+
+                long callbackTime = System.currentTimeMillis();
+                ResultHolder.dispose();
+                ResultHolder.setImage(jpeg);
+                ResultHolder.setTimeToCallback(callbackTime - captureStartTime);
+
+                mCustomStickerDB = new CustomStickersDatabase(getContext());
+                mCustomStickerDB.open();
+                mCustomStickerDB.addBitmap(result.toString(),createDate,jpeg);
+
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            Log.v(TAG, "[onProgressUpdate]");
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            Log.v(TAG, "[onPostExecute]");
+            // hide progress
+            mProgressCircle.setVisibility(View.INVISIBLE);
+
+            MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
+                    new StickerListFragment(),
+                    StickerListFragment.class.getName(),
+                    0);
+
+            mCustomStickerDB.close();
+        }
+
+        @Override
+        protected void onCancelled() {
+            Log.v(TAG, "[onCancelled]");
+            if (mSaveCustomStickerAsyncTask == null) {
+                // hide progress
+                mProgressCircle.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
 }

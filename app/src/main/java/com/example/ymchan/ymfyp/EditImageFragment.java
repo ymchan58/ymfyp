@@ -91,7 +91,6 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     private PropertiesBSFragment mPropertiesBSFragment;
     private EmojiBSFragment mEmojiBSFragment;
     private StickerBSFragment mStickerBSFragment;
-    private FramesBSFragment mFramesBSFragment;
     private LocationBSFragment mLocBSFragment;
 
     private ImageView mSelectedFrameImageView;
@@ -441,8 +440,8 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     @Override
     public void onToolSelected(ToolType toolType) {
         switch (toolType) {
-            case CROP:
-                break;
+//            case CROP:
+//                break;
             case ROTATE:
                 if(mRotateValue == 0) {
                     mRotateValue = 90;
@@ -589,7 +588,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
     public void onLocationSelected(String textLocation) {
 //        String loc = MainActivity.getLocationString();
         Log.d(TAG, "location = " + textLocation);
-        mPhotoEditor.addText("\uD83D\uDCCD " + textLocation, Color.BLACK);
+        mPhotoEditor.addTextWBG("\uD83D\uDCCD " + textLocation, Color.BLACK);
     }
 
     //Override methods for FilterListener

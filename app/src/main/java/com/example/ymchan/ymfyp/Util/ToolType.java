@@ -9,7 +9,7 @@ package com.example.ymchan.ymfyp.Util;
  * @since 5/23/2018
  */
 public enum ToolType {
-    CROP, //added by ym 31/1/2019
+//    CROP, //added by ym 31/1/2019
     ROTATE, //added by ym 31/1/2019
     ADJUST, //added by ym 31/1/2019
     BRUSH,

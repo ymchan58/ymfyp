@@ -52,8 +52,8 @@ public class CustomStickerAdapter extends RecyclerView.Adapter<CustomStickerAdap
         }
 
         for (int i=0; i < stickersFromDB.size(); i++) {
-            StickerModel currentSticker = new StickerModel(mBitmapStickerList.get(i), mStickerIDsFromDB.get(i));
-            mStickerModelList.add(currentSticker);
+//            StickerModel currentSticker = new StickerModel(mBitmapStickerList.get(i), mStickerIDsFromDB.get(i));
+//            mStickerModelList.add(currentSticker);
         }
 
 

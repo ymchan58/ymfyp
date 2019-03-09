@@ -31,7 +31,7 @@ public class EditingToolsAdapter extends RecyclerView.Adapter<EditingToolsAdapte
     public EditingToolsAdapter(OnItemSelected onItemSelected) {
         mOnItemSelected = onItemSelected;
         //added by ym 31/1/2019 to implement ucrop in:
-        mToolList.add(new ToolModel("Crop", R.drawable.ic_iconfinder_edit_crop_3671687, ToolType.CROP));
+//        mToolList.add(new ToolModel("Crop", R.drawable.ic_iconfinder_edit_crop_3671687, ToolType.CROP));
         mToolList.add(new ToolModel("Rotate", R.drawable.ic_iconfinder_rotate_left_1608422, ToolType.ROTATE));
         mToolList.add(new ToolModel("Adjust", R.drawable.ic_iconfinder_sun_symbol_110801, ToolType.ADJUST));
 

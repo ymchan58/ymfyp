@@ -27,6 +27,8 @@ import com.example.ymchan.ymfyp.Adapters.CustomStickerAdapter;
 import com.example.ymchan.ymfyp.Util.RecyclerItemTouchHelper;
 
 /**
+ * NOT USED!!!!!!
+ *
  * Created by yan min on 9/2/2019
  */
 public class StickerListSwipeFragment extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{

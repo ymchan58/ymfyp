@@ -9,6 +9,29 @@
     android:background="@drawable/background_colour_home"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="10dp"
+        android:visibility="invisible">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#90000000">
+        </FrameLayout>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
+
+    </RelativeLayout>
+
+
+
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
@@ -25,6 +48,21 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="400dp">
+
+            <com.example.ymchan.ymfyp.Util.WScratchView
+                android:id="@+id/scratch_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                wsv:antiAlias="true"
+                wsv:revealSize="20dp"
+                wsv:scratchable="true" />
+
+        </FrameLayout>
+
         <SeekBar
             android:id="@+id/scratch_size_slider"
             android:layout_width="match_parent"
@@ -36,14 +74,7 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/scratch_editor_Tools" />
 
-        <com.example.ymchan.ymfyp.Util.WScratchView
-            android:id="@+id/scratch_view"
-            android:layout_width="wrap_content"
-            android:layout_height="400dp"
-            android:layout_centerInParent="true"
-            wsv:antiAlias="true"
-            wsv:revealSize="20dp"
-            wsv:scratchable="true" />
+
 
     </FrameLayout>
 

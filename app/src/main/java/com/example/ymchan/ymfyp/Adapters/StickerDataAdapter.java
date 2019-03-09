@@ -82,6 +82,8 @@ public class StickerDataAdapter extends RecyclerView.Adapter<StickerDataAdapter.
         holder.itemView.setTag(item.getmStickerID());
 //        holder.sticker.setImageBitmap(item.getmStickerImg());
         holder.thumbnail.setImageBitmap(item.getmStickerImg());
+        holder.name.setText(item.getStickerName());
+        holder.description.setText(item.getCreateDate());
     }
 
     @Override

@@ -30,6 +30,8 @@ public class StickerSwipeAdapter extends RecyclerView.Adapter<StickerSwipeAdapte
     private List<StickerModel> mStickerModelList = new ArrayList<>();
     private List<Bitmap> mBitmapStickerList = new ArrayList<>();
     private List<Integer> mStickerIDsFromDB = new ArrayList<>();
+    private List<String> mStickerNamesFromDB = new ArrayList<>();
+    private List<String> mStickerDatesFromDB = new ArrayList<>();
 //    private StickerSwipeAdapter.OnItemSelected mOnItemSelected;
 
     private Cursor mCursor;
@@ -43,6 +45,8 @@ public class StickerSwipeAdapter extends RecyclerView.Adapter<StickerSwipeAdapte
         mCustomStickerDB.open();
         List<byte[]> stickersFromDB = mCustomStickerDB.getAllBitmap();
         mStickerIDsFromDB = mCustomStickerDB.getAllID();
+        mStickerDatesFromDB = mCustomStickerDB.getAllName();
+        mStickerDatesFromDB = mCustomStickerDB.getAllDate();
 
 
         //add stickers from db
@@ -53,7 +57,7 @@ public class StickerSwipeAdapter extends RecyclerView.Adapter<StickerSwipeAdapte
         }
 
         for (int i=0; i < stickersFromDB.size(); i++) {
-            StickerModel currentSticker = new StickerModel(mBitmapStickerList.get(i), mStickerIDsFromDB.get(i));
+            StickerModel currentSticker = new StickerModel(mBitmapStickerList.get(i), mStickerIDsFromDB.get(i), mStickerNamesFromDB.get(i), mStickerDatesFromDB.get(i));
             mStickerModelList.add(currentSticker);
         }
 

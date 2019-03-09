@@ -37,6 +37,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -159,10 +160,29 @@ public class WScratchView extends SurfaceView implements IWScratchView, SurfaceH
 
         if (mScratchBitmap != null) {
             if (mMatrix == null) {
-                float scaleWidth = (float) canvas.getWidth() / mScratchBitmap.getWidth();
-                float scaleHeight = (float) canvas.getHeight() / mScratchBitmap.getHeight();
+                Log.d(TAG, "canvas getWidth, getHeight = " + canvas.getWidth() + ", " + canvas.getHeight());
+                Log.d(TAG, "mScratchBitmap getWidth, getHeight = " + mScratchBitmap.getWidth() + ", " + mScratchBitmap.getHeight());
+//                float scaleWidth = (float) canvas.getWidth() / mScratchBitmap.getWidth();
+//                float scaleHeight = (float) canvas.getHeight() / mScratchBitmap.getHeight();
+//                Log.d(TAG, "scaleWidth, scaleHeight = " + scaleWidth + ", " + scaleHeight);
                 mMatrix = new Matrix();
-                mMatrix.postScale(scaleWidth, scaleHeight);
+//                mMatrix.postScale(1, 1);
+
+                float ratio = 1;
+
+                if (mScratchBitmap.getWidth() > mScratchBitmap.getHeight()){
+                    ratio = (float) canvas.getWidth() / mScratchBitmap.getWidth();
+                    Log.d(TAG, "ratio = " + ratio + "1/ratio = " + 1/ratio);
+                    mMatrix.postScale(ratio, ratio);
+                    mMatrix.postTranslate(0,canvas.getHeight()/2 - mScratchBitmap.getHeight()*ratio/2);
+                } else {
+                    ratio = (float) canvas.getHeight() / mScratchBitmap.getHeight();
+                    Log.d(TAG, "ratio = " + ratio + "1/ratio = " + 1/ratio);
+                    mMatrix.postScale(ratio, ratio);
+                    mMatrix.postTranslate(canvas.getWidth()/2 - mScratchBitmap.getWidth()*ratio/2,0);
+                }
+
+//                mMatrix.postScale(ratio, ratio);
             }
             canvas.drawBitmap(mScratchBitmap, mMatrix, mBitmapPaint);
         } else {
