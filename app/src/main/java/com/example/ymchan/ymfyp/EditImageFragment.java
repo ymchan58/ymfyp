@@ -291,10 +291,7 @@ public class EditImageFragment extends Fragment implements OnPhotoEditorListener
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                MainActivity.pushFragment(getActivity(), MainActivity.LAYOUT_MAIN_ID,
-                        new PreviewFragment(),
-                        PreviewFragment.class.getName(),
-                        0);
+                saveImage();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
